@@ -13,7 +13,7 @@ router.get('/yo',(req,res)=>{
 
 router.get('/contest-rating',async (req,res)=>{ 
     try{
-        const handle="striver_79" // have to receive from authentication
+        const handle="Um_nik" // have to receive from authentication
         const data=await axios.get(`https://codeforces.com/api/user.rating?handle=${handle}`) 
         const dataToSend=[]
         //  skipping: contest id and handle
@@ -21,7 +21,8 @@ router.get('/contest-rating',async (req,res)=>{
             const objToSend={
                 contestName:item.contestName,
                 rank:item.rank,
-                updatedAt: moment(item.ratingUpdateTimeSeconds*1000).format('DD/MM/YYYY'), 
+                updatedAt: item.ratingUpdateTimeSeconds, 
+                // updatedAt: moment(item.ratingUpdateTimeSeconds*1000).format('DD/MM/YYYY'), 
                 changeInRating: item.newRating-item.oldRating,
                 newRating:item.newRating,
                 newCategory: getCategory(item.newRating)
@@ -34,11 +35,10 @@ router.get('/contest-rating',async (req,res)=>{
     }
 })
 
-router.get('/problems-rating',async (req,res)=>{
-    // rating - #problems accepted in that rating
+router.get('/problems-rating',async (req,res)=>{   // correct--verified twice
     try{
-        const handle="striver_79" // have to receive from authentication
-        const data=await axios.get(`https://codeforces.com/api/user.status?handle=${handle}`) 
+        const handle="Hawkeye_2000" // have to receive from authentication
+        const data=await axios.get(`https://codeforces.com/api/user.status?handle=${handle}`)  //////// this handle will be acquired from db when the user will be authenticated and will have his account in our site
         const dataToSend= getRatingProblemsDist(data.data.result)
         res.send(dataToSend)
     }catch(error){
