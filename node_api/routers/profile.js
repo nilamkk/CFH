@@ -13,7 +13,7 @@ router.get('/yo',(req,res)=>{
 
 router.get('/contest-rating',async (req,res)=>{ 
     try{
-        const handle="Um_nik" // have to receive from authentication
+        const handle="Hawkeye_2000" // have to receive from authentication
         const data=await axios.get(`https://codeforces.com/api/user.rating?handle=${handle}`) 
         const dataToSend=[]
         //  skipping: contest id and handle
@@ -75,7 +75,7 @@ router.get('/user-profile',async (req,res)=>{
 router.get('/submissions-pi-info',async (req,res)=>{
     // FAILED, OK, PARTIAL, COMPILATION_ERROR, RUNTIME_ERROR, WRONG_ANSWER, PRESENTATION_ERROR, TIME_LIMIT_EXCEEDED, MEMORY_LIMIT_EXCEEDED, IDLENESS_LIMIT_EXCEEDED, SECURITY_VIOLATED, CRASHED, INPUT_PREPARATION_CRASHED, CHALLENGED, SKIPPED, TESTING, REJECTED. Can be absent.
     try{
-        const handle="Um_nik" // For Um_nik, it took 78.62482610000112 seconds,60.72122929999977
+        const handle="Hawkeye_2000" // For Um_nik, it took 78.62482610000112 seconds,60.72122929999977
         // const handle="striver_79" // For striver_79, it took 18.726451600000264 seconds.
         // const handle="Hawkeye_2000" // For Hawkeye_2000, it took 6.485499400999397 seconds,3.2269618999995293, 
 
@@ -95,7 +95,6 @@ router.get('/submissions-pi-info',async (req,res)=>{
                 dataToSend[result[i].verdict]+=1
             i++;
         }
-
         
         ////////////////////-----------------------------------------------------------------------------------------
         // var t1 = performance.now()

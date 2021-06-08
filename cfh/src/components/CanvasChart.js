@@ -1,10 +1,31 @@
 // Canvasjs chart
 import React,{Component} from 'react';
-import CanvasJSReact from '../assets/canvasjs.react'
-// import path from 'path'
 import axios from 'axios'
+import moment from 'moment'
+// import path from 'path'
+import CanvasJSReact from '../assets/canvasjs.react'
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+let customPieColors=        {
+  "FAILED":"#a30716", 
+  "OK":"#1db81d", 
+  "PARTIAL":"#f7dd16", 
+  "COMPILATION_ERROR":"#7a5b5e", 
+  "RUNTIME_ERROR":"#f53016", 
+  "WRONG_ANSWER":"#cf0808", 
+  "PRESENTATION_ERROR":"#959e51", 
+  "TIME_LIMIT_EXCEEDED":"#8669b5", 
+  "MEMORY_LIMIT_EXCEEDED":"#56348c", 
+  "IDLENESS_LIMIT_EXCEEDED":"#390e7d", 
+  "SECURITY_VIOLATED":"#907eab", 
+  "CRASHED":"#554f5e", 
+  "INPUT_PREPARATION_CRASHED":"#853bf5", 
+  "CHALLENGED":"#452c6b", 
+  "SKIPPED":"#f70213", 
+  "TESTING":"#65ebe2", 
+  "REJECTED":"#80a6a3",
+  "unknown":"#060a0a" //Can_be_absent
+}
 
 class Chart extends Component{
   // for the time being I will do all with component state, but I have to convert all to redux
@@ -16,28 +37,30 @@ class Chart extends Component{
     if(this.state.data.length!==0)
       return;
 
-    let link
+    let link=""
     // when authentication will be added, have to maintain session/other things for authentication
     if(this.props.chartTitle==="Rating Wise Count of Accepted Questions"){
-        link="/problems-rating"
+      link="/problems-rating"
     }else if(this.props.chartTitle==="Rated Participated Contests"){
-        link="/contest-rating"
+      link="/contest-rating"
+    }else if(this.props.chartTitle==="Submission pie chart"){
+      link="/submissions-pi-info"
     }
     const data= await axios.get( link )
     console.log(data.data)
 
-    // dataPoints=[                                                                          ///// have to grab it by api call
-    //   {label:"0-499",y:10},   
-    //   {label:"500-999",y:20}, 
-    //   {label:"1000-1499",y:20}, 
-    //   {label:"1500-1999",y:60}, 
-    //   {label:"2000-2499",y:20},
-    //   {label:"2500-2999",y:30},
-    //   {label:"3000-3499",y:40},
-    //   {label:">3500",y:15}
-    // ]
     let dataPoints=[]
     if(this.props.chartTitle==="Rating Wise Count of Accepted Questions"){
+      // dataPoints=[                                                                          
+      //   {label:"0-499",y:10},   
+      //   {label:"500-999",y:20}, 
+      //   {label:"1000-1499",y:20}, 
+      //   {label:"1500-1999",y:60}, 
+      //   {label:"2000-2499",y:20},
+      //   {label:"2500-2999",y:30},
+      //   {label:"3000-3499",y:40},
+      //   {label:">3500",y:15}
+      // ]
       // data.data is an object
       for(let prop in data.data){
         dataPoints.push({
@@ -46,7 +69,7 @@ class Chart extends Component{
         })
       } 
     }else if(this.props.chartTitle==="Rated Participated Contests"){
-      // dataPoints=[                                                                        ///// have to grab it by api call
+      // dataPoints=[                                                                        
       //   { x: new Date(2017, 0,1), y: 0 },
       //   { x: new Date(2017, 0,3), y: 480 },
       //   { x: new Date(2017, 0,5), y: 790 },
@@ -66,10 +89,22 @@ class Chart extends Component{
       for(let i=0;i<data.data.length;i++){
         dataPoints.push({
           x: new Date(data.data[i].updatedAt*1000),
-          y: parseInt(data.data[i].newRating)
+          y: parseInt(data.data[i].newRating),
+          toolTipContent:`<p>=${data.data[i].newRating} (${(data.data[i].changeInRating>0?"+":"")}${data.data[i].changeInRating}),${data.data[i].newCategory}</p><p>Rank:${data.data[i].rank}</p><p>${data.data[i].contestName}</p><p>${moment(data.data[i].updatedAt*1000).format('DD/MM/YYYY')}</p>`
+        })
+      }
+    }else if(this.props.chartTitle==="Submission pie chart"){
+      for(let prop in data.data){
+        dataPoints.push({
+          y: parseInt(data.data[prop]),
+          label:prop,
+          color:customPieColors[prop],
+          toolTipContent:`<p>${prop}</p><p>Count: ${data.data[prop]}</p>`
         })
       }
     }
+
+
     let oldData=[...this.state.data]
     oldData.push({
       dataPoints:dataPoints
@@ -86,12 +121,12 @@ class Chart extends Component{
     let desiredChart
 
     if(this.state.data.length===0){
-      desiredChart="<Spinner/>" ///////////////////////////////////////
+      desiredChart="<Spinner/>"                                                  /////////////////////////////////////// have to add
     }else{
 
-      let dataPoints=[]
       let type=""
       let axisX,axisY,toolTip,legend,showInLegend,legendText
+      let Options
       
       if(this.props.chartTitle==="Rating Wise Count of Accepted Questions"){
         axisX={
@@ -108,17 +143,24 @@ class Chart extends Component{
           fontWeight:"lighter"
         }
         showInLegend=false
-        type="column"   
-        dataPoints=[                                                                          ///// have to grab it by api call
-          {label:"0-499",y:10},   
-          {label:"500-999",y:20}, 
-          {label:"1000-1499",y:20}, 
-          {label:"1500-1999",y:60}, 
-          {label:"2000-2499",y:20},
-          {label:"2500-2999",y:30},
-          {label:"3000-3499",y:40},
-          {label:">3500",y:15}
-        ]
+        type="column"
+        
+        Options={
+          animationEnabled: true,
+          title:{
+            text: this.props.chartTitle
+          },
+          axisX: {...axisX},
+          axisY: {...axisY},
+          toolTip:{...toolTip},
+          legend:{...legend},
+          data: [{
+            showInLegend: showInLegend,              
+            legendText: legendText,                                 
+            type: type,                                               
+            dataPoints: this.state.data[0].dataPoints
+          }]
+        }   
       }else if(this.props.chartTitle==="Rated Participated Contests" ){
         axisX={
           gridColor:"white",
@@ -262,17 +304,16 @@ class Chart extends Component{
           ]
 
         }
-        toolTip={                                                                             ///// have to grab it by api call
-          // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/tool-tip/            
+        toolTip={                                                                             
           enabled:true,
           fontColor:"white",
-          content:"<p>=1158(-55),newbiw</p><p>Rank:10000</p><p>CF DIV 2</p>",   
+          content:"<p>=1158(-55),newbiw</p><p>Rank:10000</p><p>CF DIV 2</p>",  // it wont affect though 
           backgroundColor:"rgba(0,0,0,0.7)",
           cornerRadius:10,
           fontWeight:"lighter"
         }
         showInLegend=true
-        legendText="Hawkeye_2000"
+        legendText="Hawkeye_2000"                                                           ///// have to grab it by authentication  
         legend={                                                      
           dockInsidePlotArea:true,
           horizontalAlign:"right",
@@ -280,41 +321,43 @@ class Chart extends Component{
           cursor:"pointer"
         }
         type="line"
-        // dataPoints=[                                                                        ///// have to grab it by api call
-        //   { x: new Date(2017, 0,1), y: 0 },
-        //   { x: new Date(2017, 0,3), y: 480 },
-        //   { x: new Date(2017, 0,5), y: 790 },
-        //   { x: new Date(2017, 0,10), y: 1000 },
-        //   { x: new Date(2017, 0,15), y: 1100 },
-        //   { x: new Date(2017, 0,20), y: 999 },
-        //   { x: new Date(2017, 0,23 ), y: 1050 },
-        //   { x: new Date(2017, 0,26), y: 1132 },
-        //   { x: new Date(2017, 8), y: 1200 },
-        //   { x: new Date(2017, 9), y: 1212 },
-        //   { x: new Date(2017, 10), y: 1250 },
-        //   { x: new Date(2017, 11), y: 1300 },
-        //   { x: new Date(2018, 0,1), y: 1700 },
-        //   { x: new Date(2018, 0,1), y: 2100 }
-        // ]
+
+        Options={
+          animationEnabled: true,
+          title:{
+            text: this.props.chartTitle
+          },
+          axisX: {...axisX},
+          axisY: {...axisY},
+          toolTip:{...toolTip},
+          legend:{...legend},
+          data: [{
+            showInLegend: showInLegend,              
+            legendText: legendText,                                 
+            type: type,                                               
+            dataPoints: this.state.data[0].dataPoints
+          }]
+        }
+      }else if(this.props.chartTitle==="Submission pie chart"){
+        Options={
+          exportEnabled: true,
+          animationEnabled: true,
+          title: {
+            text: this.props.chartTitle
+          },
+          data: [{
+            type: "pie",
+            startAngle: 75,
+            showInLegend: "true",
+            legendText: "{label}",
+            indexLabelFontSize: 16,
+            indexLabel: "{y} ",
+            dataPoints: this.state.data[0].dataPoints
+          }]
+        }
       }
 
-      const options = {
-        animationEnabled: true,
-        title:{
-          text: this.props.chartTitle
-        },
-        axisX: {...axisX},
-        axisY: {...axisY},
-        toolTip:{...toolTip},
-        legend:{...legend},
-        data: [{
-          showInLegend: showInLegend,              
-          legendText: legendText,                                 
-          type: type,                                               
-          dataPoints: this.state.data[0].dataPoints
-        }]
-      }
-      desiredChart=<CanvasJSChart options = {options}/>
+      desiredChart=<CanvasJSChart options = {Options}/>
     }
     
 		return (
