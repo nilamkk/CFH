@@ -62,7 +62,7 @@ router.get('/user-profile',async (req,res)=>{
             "city":result.city,
             "rating":result.rating,
             "maxRating":result.maxRating,
-            "photo":"have to send",
+            "photo":result.titlePhoto,
             "handle":result.handle,
             "category":result.rank,
             "maxCategory":result.maxRank
