@@ -169,3 +169,112 @@ module.exports= router
             //     dataToSend["unknown"]+=1
             // }
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
+            
+  async componentDidMount(){
+    if(this.state.data.length!==0)
+      return;
+    let handle=authCntx.Handle
+    // when authentication will be added, have to maintain session/other things for authentication
+    try{
+      let data=null
+      if(this.props.chartTitle==="Rating Wise Count of Accepted Questions"){
+        const data= await getProblemsRating(handle)
+      }else if(this.props.chartTitle==="Rated Participated Contests"){
+        data= await getContestRating(handle)   
+      }else if(this.props.chartTitle==="Submission pie chart"){
+        data= await getSubmissionPie(handle)
+      }else if(this.props.chartTitle==="Problem-rating pie chart"){
+        const data= await getProblemsRating(handle)
+      }
+
+
+      console.log(data.data)
+
+      let dataPoints=[]
+      if(this.props.chartTitle==="Rating Wise Count of Accepted Questions"){
+        // dataPoints=[                                                                          
+        //   {label:"0-499",y:10},   
+        //   {label:"500-999",y:20}, 
+        //   {label:"1000-1499",y:20}, 
+        //   {label:"1500-1999",y:60}, 
+        //   {label:"2000-2499",y:20},
+        //   {label:"2500-2999",y:30},
+        //   {label:"3000-3499",y:40},
+        //   {label:">3500",y:15}
+        // ]
+        // data.data is an object
+        for(let prop in data.data){
+          dataPoints.push({
+            label:prop,
+            y: parseInt(data.data[prop])  
+          })
+        } 
+      }else if(this.props.chartTitle==="Rated Participated Contests"){
+        // dataPoints=[                                                                        
+        //   { x: new Date(2017, 0,1), y: 0 },
+        //   { x: new Date(2017, 0,3), y: 480 },
+        //   { x: new Date(2017, 0,5), y: 790 },
+        //   { x: new Date(2017, 0,10), y: 1000 },
+        //   { x: new Date(2017, 0,15), y: 1100 },
+        //   { x: new Date(2017, 0,20), y: 999 },
+        //   { x: new Date(2017, 0,23 ), y: 1050 },
+        //   { x: new Date(2017, 0,26), y: 1132 },
+        //   { x: new Date(2017, 8), y: 1200 },
+        //   { x: new Date(2017, 9), y: 1212 },
+        //   { x: new Date(2017, 10), y: 1250 },
+        //   { x: new Date(2017, 11), y: 1300 },
+        //   { x: new Date(2018, 0,1), y: 1700 },
+        //   { x: new Date(2018, 0,1), y: 2100 }
+        // ]
+        // data.data is an array
+        for(let i=0;i<data.data.length;i++){
+          dataPoints.push({
+            x: new Date(data.data[i].updatedAt*1000),
+            y: parseInt(data.data[i].newRating),
+            toolTipContent:`<p>=${data.data[i].newRating} (${(data.data[i].changeInRating>0?"+":"")}${data.data[i].changeInRating}),${data.data[i].newCategory}</p><p>Rank:${data.data[i].rank}</p><p>${data.data[i].contestName}</p><p>${moment(data.data[i].updatedAt*1000).format('DD/MM/YYYY')}</p>`
+          })
+        }
+      }else if(this.props.chartTitle==="Submission pie chart" || this.props.chartTitle==="Problem-rating pie chart"){
+        for(let prop in data.data){
+          dataPoints.push({
+            y: parseInt(data.data[prop]),
+            label:prop,
+            color:customPieColors[prop],
+            toolTipContent:`<p>${prop}</p><p>Count: ${data.data[prop]}</p>`
+          })
+        }
+      }
+  
+  
+      let oldData=[...this.state.data]
+      oldData.push({
+        dataPoints:dataPoints
+      })
+      this.setState({
+        data:oldData
+      }) 
+
+    }catch(error){
+      console.log(error)
+    }
+
+    
+  }
+
+            
+            */

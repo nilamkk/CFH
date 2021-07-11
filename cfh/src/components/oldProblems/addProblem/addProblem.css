@@ -1,0 +1,16 @@
+
+
+.just-for-timepass{
+    border: 1px solid red;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.tag{
+    background-color: rgb(230, 93, 93);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px;
+}

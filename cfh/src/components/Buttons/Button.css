@@ -1,0 +1,47 @@
+
+/* .btn{
+    margin: 10px;
+    padding: 10px;
+    background-color: papayawhip;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover{
+    background-color: rgb(197, 170, 126);
+} */
+
+
+.Button {
+    /* background-color: transparent; */
+    background-color: papayawhip;
+    border: none;
+    color: rgb(53, 46, 46);
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* .Button:first-of-type {
+    margin-left: 0;
+    padding-left: 0;
+} */
+
+.Success {
+    color: #5C9210;
+}
+
+.Danger {
+    color: #dd2828;
+}
+
+.Disabled{
+    color:rgb(145, 141, 141);
+    cursor: not-allowed;
+}
