@@ -5,20 +5,20 @@ const userSchema = new mongoose.Schema({
     Handle: {
         type: String,
         required: true,
-        trim: true,
-        unique:true     ////////// remove this ********************************************
+        trim: true
     },
     LocalId: {
         type: String,
         unique: true,
         required: true,
-        trim: true
+        trim: true,
+        index: true
     },
     Categories:[{
         title:String,    
         problems:[{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"Problem"
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Problem"
         }]
     }],
     ReminderSubscriptions:[{
@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema({
     ReminderContests:[{
         name:String,
         site:String,
-        start_time:Date
+        start_time:Date,
+        contestLink:String
     }]
 }, {
     timestamps: true

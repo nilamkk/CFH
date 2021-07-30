@@ -48,7 +48,6 @@ self.addEventListener('push',(event)=>{
             url:data.url                        //////////////////////////// from server 
         }
     }
-
     // dont know why this event.waitUntil()?
     event.waitUntil( 
         // dont know why not the old way? 

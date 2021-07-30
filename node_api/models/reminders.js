@@ -2,18 +2,20 @@ const mongoose = require('mongoose')
 
 const reminderSchema = new mongoose.Schema({
     notification_time: {
-        type: Date          // string valid date can be passed
+        type: Date,          
+        index:true           ///////////////////////////////////////////////////////////////////////////////////////// not sure though
     },
     notification_status: {
         type: String        // values: 'NotYetSend' / 'Sent'
     },  
     SubscriberIDs: [{
-        type: String        // convert it to obj id to search
+        type: String        
     }],
     ContestInfo:{
         name:String,
-        start_time:Date,        // pass a string valid date
-        site:String             ///////////////////////////////// will have to add contest link
+        start_time:Date,        
+        site:String,             
+        contestLink:String
     }
 })
 

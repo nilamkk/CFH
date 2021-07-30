@@ -26,7 +26,6 @@ router.post('/create-user',async (req,res)=>{
         })
     }
 })
-
 router.post('/get-handle',async (req,res)=>{   // correct--verified twice
     try{
         const user=await User.findOne({LocalId:req.body.LocalId})
@@ -80,7 +79,8 @@ router.post('/set-contest-reminder',async (req,res)=>{
             ContestInfo:{
                 name: req.body.ContestInfo.name,
                 start_time: new Date(req.body.ContestInfo.start_time),        
-                site: req.body.ContestInfo.site
+                site: req.body.ContestInfo.site,
+                contestLink:req.body.ContestInfo.contestLink  ///////////////////////////////////////////////////////////////////////////// problem999
             }
         })
 
@@ -92,7 +92,8 @@ router.post('/set-contest-reminder',async (req,res)=>{
                 ContestInfo:{
                     name: req.body.ContestInfo.name,
                     start_time: req.body.ContestInfo.start_time,        //// try date if no work
-                    site: req.body.ContestInfo.site
+                    site: req.body.ContestInfo.site,
+                    contestLink: req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
                 },
                 SubscriberIDs:[req.body.LocalId]
             })
@@ -115,14 +116,16 @@ router.post('/set-contest-reminder',async (req,res)=>{
         user.ReminderContests.push({
             name:req.body.ContestInfo.name,
             site:req.body.ContestInfo.site,
-            start_time:req.body.ContestInfo.start_time
+            start_time:req.body.ContestInfo.start_time,
+            contestLink:req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
         })
         user= await user.save()
 
         res.send({
             name:req.body.ContestInfo.name,
             site:req.body.ContestInfo.site,
-            start_time:req.body.ContestInfo.start_time
+            start_time:req.body.ContestInfo.start_time,
+            contestLink:req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
         })
 
     }catch(error){
@@ -157,7 +160,8 @@ router.post('/remove-user-reminder-contest',async (req,res)=>{
             ContestInfo:{
                 name: req.body.ContestInfo.name,
                 start_time: new Date(req.body.ContestInfo.start_time),        
-                site: req.body.ContestInfo.site
+                site: req.body.ContestInfo.site,
+                contestLink: req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
             }
         })
 
@@ -176,7 +180,8 @@ router.post('/remove-user-reminder-contest',async (req,res)=>{
                     ContestInfo:{
                         name: req.body.ContestInfo.name,
                         start_time: new Date(req.body.ContestInfo.start_time),        
-                        site: req.body.ContestInfo.site
+                        site: req.body.ContestInfo.site,
+                        contestLink:req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
                     }
                 })
                 console.log("Deleted !!!")
@@ -194,11 +199,13 @@ router.post('/remove-user-reminder-contest',async (req,res)=>{
         let itemToSearchU={
             name:req.body.ContestInfo.name,
             site:req.body.ContestInfo.site,
-            start_time:req.body.ContestInfo.start_time
+            start_time:req.body.ContestInfo.start_time,
+            contestLink:req.body.ContestInfo.contestLink ///////////////////////////////////////////////////////////////////////////// problem999
         }
         for(let k=0;k<user.ReminderContests.length;k++){
             if( user.ReminderContests[k].name===itemToSearchU.name 
                 && user.ReminderContests[k].site===itemToSearchU.site
+                && user.ReminderContests[k].contestLink===itemToSearchU.contestLink
                 && (new Date(user.ReminderContests[k].start_time).getTime())===(new Date(itemToSearchU.start_time).getTime())  )
             {
                 indexOfItemToRemove=k;

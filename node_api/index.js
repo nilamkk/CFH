@@ -2,7 +2,11 @@ const dotenv =require('dotenv');
 dotenv.config();
 require('./db/mongoose')
 
-//////////////////////////////// yaat scheduling r kaam kribo lagbo ////////////
+// Below is for DB automatic updation
+require('./db/addProblemsToDB.js')
+// the below is the scheduling part
+require('./utils/schedulingTasks')
+
 
 const express=require('express');
 const profileRouter=require('./routers/profile');

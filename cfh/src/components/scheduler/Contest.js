@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { Fragment,useEffect,useState } from 'react'
+import { Fragment,useState } from 'react'
 
 import Modal from '../Modal/Modal'
 import Button from '../Buttons/Button'
@@ -35,6 +35,7 @@ const Contest=props=>{
             return;
         }
         setLoading(true)
+        console.log(contestInfo.url,"***********")
         try{
             const res=await fetch('/set-contest-reminder',{                 
                 method:"POST", 
@@ -47,7 +48,8 @@ const Contest=props=>{
                     ContestInfo:{
                         name:contestInfo.name,
                         site:contestInfo.site,
-                        start_time:contestInfo.start_time
+                        start_time:contestInfo.start_time,
+                        contestLink:contestInfo.url
                     }
                 })                                        
            })
@@ -136,7 +138,8 @@ const Contest=props=>{
                     ContestInfo:{
                         name:contestInfo.name,
                         site:contestInfo.site,
-                        start_time:contestInfo.start_time
+                        start_time:contestInfo.start_time,
+                        contestLink:contestInfo.url
                     }
                 })                                        
             })

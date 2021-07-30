@@ -1,4 +1,3 @@
-require('./../db/mongoose')
 
 const Reminder= require('../models/reminders')
 const User= require('../models/user')
@@ -18,7 +17,7 @@ const sendReminder=(subscription,ContestInfo)=>{  //////////////////////////// t
           p256dh: subscription.keys.p256dh
         }
     };
-    webpush.sendNotification(pushSubscription, JSON.stringify({title: `${ContestInfo.site}: ${ContestInfo.name}`, content: `Starts at ${ContestInfo.start_time}`,url:'https://www.google.com/'}))
+    webpush.sendNotification(pushSubscription, JSON.stringify({title: `${ContestInfo.site}: ${ContestInfo.name}`, content: `Starts at ${ContestInfo.start_time}`,url:ContestInfo.contestLink   }))
     .catch(function(err) {
         console.log(err);
     })
@@ -52,7 +51,7 @@ const handleReminder=async (reminder)=>{
 
     reminder.SubscriberIDs.forEach(
         (LocalId)=>{
-                handleUser(LocalId,reminder.ContestInfo)
+                handleUser(LocalId,reminder.ContestInfo) ////////////////////
                 .catch((error)=>{
                     console.log("Failed to handle user")
                     console.log(error)
@@ -73,12 +72,10 @@ const handleReminder=async (reminder)=>{
 // find the appropriate reminders
 const scheduledReminderSender=async ()=>{
     const d= new Date().getTime()
-    const dU=d+420000
-    console.log("1")
+    const dU=d+420000      // 7 mins
     const reminders= await Reminder.find({
         notification_time:{ $gte:new Date(d) , $lte:new Date(dU) }
     })
-    console.log("2")
     if(reminders.length===0){
         return;
     }
@@ -95,9 +92,9 @@ const scheduledReminderSender=async ()=>{
 // */5 * * * *
 
 schedule.scheduleJob('5-min-reminder-job','*/5 * * * *',()=>{
-    
     // Description: It will fetch appropriate reminders from DB.
     // for each reminder send notification to each user, deletes info from each user and ultimately deletes that reminder
+    console.log("I am running !!!")
     scheduledReminderSender()
     .then((i)=>{
         console.log("hoi gol")
@@ -107,10 +104,3 @@ schedule.scheduleJob('5-min-reminder-job','*/5 * * * *',()=>{
         console.log(error)
     })
 })
-
-
-
-
-
-
-

@@ -137,6 +137,7 @@ const Scheduler=(props)=>{
         for(let i=0;i<newListOfUpComingCnts.length;i++){
             if( newListOfUpComingCnts[i].name===itemContest.name
                 && newListOfUpComingCnts[i].site===itemContest.site
+                // && newListOfUpComingCnts[i].contestLink===itemContest.contestLink  ///////////////////////////////////// problem999
                 && (new Date(newListOfUpComingCnts[i].start_time).getTime())  ===  (new Date(itemContest.start_time).getTime() ) )
             {
                 newListOfUpComingCnts[i].reminderAdded=true;
