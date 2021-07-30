@@ -13,6 +13,9 @@ router.post('/add-category',async (req,res)=>{
     //{LocalId,title}
     try{
         let user=await User.findOne({LocalId:req.body.LocalId})
+        if(!user){
+            throw new Error("User not found !!!" )
+        }        
         user.Categories.push({
             title:req.body.title,
             problems:[]
@@ -20,18 +23,25 @@ router.post('/add-category',async (req,res)=>{
         user=await user.save()
         res.send(user.Categories)
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.get('/get-category',async (req,res)=>{              
     //{LocalId}
     try{
         let user=await User.findOne({LocalId:req.query.LocalId})
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
         res.send(user.Categories) // an array, have to remove problems later
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.delete('/delete-category',async (req,res)=>{         
@@ -39,6 +49,10 @@ router.delete('/delete-category',async (req,res)=>{
     try{
         let user=await User.findOne({LocalId:req.body.LocalId})
         
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+
         let ind=-1
         for(let i=0;i<user.Categories.length;i++){
             if(user.Categories[i].title===req.body.title && 
@@ -53,15 +67,21 @@ router.delete('/delete-category',async (req,res)=>{
 
         res.send(user.Categories)
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.post('/add-problems-to-category',async (req,res)=>{   
     // {LocalId,title,problemId}  // categoryId
     try{
         let user=await User.findOne({LocalId:req.body.LocalId})
-        
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+
         let ind=-1
         for(let i=0;i<user.Categories.length;i++){
             if(user.Categories[i].title===req.body.title){
@@ -74,7 +94,10 @@ router.post('/add-problems-to-category',async (req,res)=>{
 
         res.send(user.Categories[ind])  ////// return sabo lagibo
     }catch(error){
-        console.log(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.get('/get-problems-from-category',async (req,res)=>{        
@@ -82,6 +105,10 @@ router.get('/get-problems-from-category',async (req,res)=>{
     try{
         
         let user=await User.findOne({LocalId:req.query.LocalId})
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
 
         let ind=-1
         for(let i=0;i<user.Categories.length;i++){
@@ -97,8 +124,10 @@ router.get('/get-problems-from-category',async (req,res)=>{
         
         res.send(user.Categories[ind])// an object 
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.get('/get-problem-by-name',async(req,res)=>{
@@ -107,9 +136,13 @@ router.get('/get-problem-by-name',async(req,res)=>{
         // will search the given name containing word string in db
         const re= new RegExp(".*"+req.query.name+".*")
         const problems=await Problem.find( { 'name' : { $regex:re, $options:'i' } } )
-        
+
         // adding category property to the problems
         const user=await User.findOne({LocalId:req.query.LocalId})
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
 
         const problemsToSend=problems.map(
             item=>{
@@ -144,10 +177,11 @@ router.get('/get-problem-by-name',async(req,res)=>{
         )
         res.send(problemsToSend)  // array of problems
     }catch(error){
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
-
-
 })
 
 

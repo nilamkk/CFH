@@ -24,6 +24,7 @@ const doThis=async ()=>{
     }
 }
 
+
 doThis()
 .then((res)=>{
     console.log("All saved!!!")

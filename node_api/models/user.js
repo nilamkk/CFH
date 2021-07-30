@@ -6,21 +6,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique:true
+        unique:true     ////////// remove this ********************************************
     },
     LocalId: {
         type: String,
         unique: true,
         required: true,
         trim: true
-        // validate(value) {
-        //     if (!validator.isEmail(value)) {
-        //         throw new Error('Email is invalid')
-        //     }
-        // }
     },
     Categories:[{
-        title:String,     //////// have to truncate,all lower case, manual unique check
+        title:String,    
         problems:[{
                 type:mongoose.Schema.Types.ObjectId,
                 ref:"Problem"

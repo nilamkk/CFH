@@ -20,28 +20,41 @@ router.post('/create-user',async (req,res)=>{
         await user.save()
         res.send(user)
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(500).send({
+            error:error.message
+        })
     }
 })
-/////////////////////////////////////////// have to be changed*******
+
 router.post('/get-handle',async (req,res)=>{   // correct--verified twice
     try{
         const user=await User.findOne({LocalId:req.body.LocalId})
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+
         console.log(user.Handle)
         res.send({
             Handle:user.Handle
         })
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.post('/update-user-subscription',async (req,res)=>{   // working great :)
     // {LocalId,subscription}
     try{
         let user=await User.findOne({LocalId:req.body.LocalId})
-        
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+
         user.ReminderSubscriptions.push(
             req.body.subscription
         )
@@ -52,8 +65,10 @@ router.post('/update-user-subscription',async (req,res)=>{   // working great :)
         })
 
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.post('/set-contest-reminder',async (req,res)=>{   
@@ -93,6 +108,10 @@ router.post('/set-contest-reminder',async (req,res)=>{
         // add this reminder info to user too
         let user= await User.findOne({LocalId:req.body.LocalId})
 
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+
         user.ReminderContests.push({
             name:req.body.ContestInfo.name,
             site:req.body.ContestInfo.site,
@@ -107,21 +126,26 @@ router.post('/set-contest-reminder',async (req,res)=>{
         })
 
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.get('/get-user-reminder-contests',async (req,res)=>{   
     //{LocalId}
     try{
         const user=await User.findOne({LocalId:req.query.LocalId})
-        console.log(user.ReminderContests)
-        
+
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
         res.send(user.ReminderContests) // array
-    
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 router.post('/remove-user-reminder-contest',async (req,res)=>{   
@@ -162,6 +186,10 @@ router.post('/remove-user-reminder-contest',async (req,res)=>{
         // remove this reminder info from user too
         let user= await User.findOne({LocalId:req.body.LocalId})
 
+        if(!user){
+            throw new Error("User not found !!!" )
+        }
+        
         let indexOfItemToRemove=-1
         let itemToSearchU={
             name:req.body.ContestInfo.name,
@@ -185,8 +213,10 @@ router.post('/remove-user-reminder-contest',async (req,res)=>{
         res.send(itemToSearchU)  // this item should be updated in the UI
 
     }catch(error){
-        console.log(error)
-        res.send(error)
+        console.log(error.message)
+        res.status(400).send({
+            error:error.message
+        })
     }
 })
 
