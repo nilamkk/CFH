@@ -33,6 +33,12 @@ export const AuthContextProvider=(props)=>{
     }
 
     const logOutHandler=()=>{
+        localStorage.removeItem('cb_user')
+        localStorage.removeItem('cb_user_mail')
+        localStorage.removeItem('cb_user_expiresIn')
+        localStorage.removeItem('cb_user_localId')
+        localStorage.removeItem('cb_user_handleIp')
+
         setInfo(null)
     }
 

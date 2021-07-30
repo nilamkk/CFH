@@ -1,46 +1,62 @@
 // Canvasjs chart
-import React,{Component} from 'react';
-import moment from 'moment'
+import React,{Component,Fragment} from 'react';
 
+import {getDateMonthYear} from '../../utils/functions'
+import Spinner from '../Spinner/Spinner';
 import CanvasJSReact from '../../assets/canvasjs.react'
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
 
 class CfRatingGraph extends Component{
   
     state={
         dataPoints:null,
-        toolTip:null
+        loading:false,
+        error:null
     }
 
     async componentDidMount(){
-        if(this.state.dataPoints)
+        if(this.state.dataPoints || this.state.error)
             return;
+        this.setState({
+            loading:true
+        })
         let handle=this.props.handle
         try{
-            let data= await this.props.getData(handle)   
+            // console.log("NKK-1")
+            let data= await this.props.getData(handle)  
             let dataPoints=[]
+            // console.log(data) 
+ 
             // data is an array
             for(let i=0;i<data.length;i++){
+                // console.log(parseInt(data[i].newRating))
                 dataPoints.push({
                     x: new Date(data[i].updatedAt*1000),
                     y: parseInt(data[i].newRating),
-                    toolTipContent:`<p>=${data[i].newRating} (${(data[i].changeInRating>0?"+":"")}${data[i].changeInRating}),${data[i].newCategory}</p><p>Rank:${data[i].rank}</p><p>${data[i].contestName}</p><p>${moment(data[i].updatedAt*1000).format('DD/MM/YYYY')}</p>`
+                    toolTipContent:`<p>=${data[i].newRating} (${(data[i].changeInRating>0?"+":"")}${data[i].changeInRating}),${data[i].newCategory}</p><p>Rank:${data[i].rank}</p><p>${data[i].contestName}</p><p>${ getDateMonthYear(data[i].updatedAt*1000)}</p>`
                 })
             }
-            if(dataPoints.length==0){
+
+            if(dataPoints.length===0){
                 for(let i=0;i<30;i++){
                     dataPoints.push({
-                        x: new Date( (new Date().getTime()-(90000000*i))),
+                        x: new Date( (  (new Date().getTime())-  (90000000*i)  )  ),
                         y: null,
-                        // toolTipContent:`<p>=${data[i].newRating} (${(data[i].changeInRating>0?"+":"")}${data[i].changeInRating}),${data[i].newCategory}</p><p>Rank:${data[i].rank}</p><p>${data[i].contestName}</p><p>${moment(data[i].updatedAt*1000).format('DD/MM/YYYY')}</p>`
                     })  
                 }
             }
             this.setState({
-                dataPoints:dataPoints
+                dataPoints:dataPoints,
+                loading:false,
+                error:null
             }) 
 
         }catch(error){
+            this.setState({
+                loading:false,
+                error:error.message
+            })
             console.log(error)
         }
     }
@@ -49,8 +65,15 @@ class CfRatingGraph extends Component{
     
         let desiredChart
 
+
         if(!this.state.dataPoints){
-            desiredChart="<Spinner/>"
+            if(this.state.error){
+                desiredChart=<p style={{color:'black'}}>{this.state.error}</p>
+            }else{
+                desiredChart=<Spinner/>
+            }
+        }else if(this.state.dataPoints.length===0){
+            desiredChart=<p>No data available</p>
         }else{
 
             let type=""
@@ -235,11 +258,15 @@ class CfRatingGraph extends Component{
             }
             desiredChart=<CanvasJSChart options = {Options}/>
         }
+        // console.log(desiredChart)
     
         return (
-            <div>
-                {desiredChart}
-            </div>
+            <Fragment>
+                <div>
+                    {desiredChart}
+                </div>
+            </Fragment>
+            
         );
 	}
     

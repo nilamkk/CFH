@@ -5,9 +5,10 @@ import './Homepage.css'
 
 const Home=(props)=>{
     return(
+        // container div
         <div className="text-alignment-centre" >
             
-            {props.isAuthenticated? <p>Hello I am Home! Have fun! Authenticated!</p> : <p>Seems like you have not logged in/ sign up yet</p>}
+            {props.isAuthenticated? <p className="text-gray">Logged in successfully!!!</p> : <p className="text-gray">Log in or Sign up to see the features!!! </p>}
             <Route path='/home/auth' >      <Auth />          </Route>
 
         </div>

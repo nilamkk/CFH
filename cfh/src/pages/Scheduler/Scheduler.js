@@ -2,6 +2,10 @@ import {useState,useEffect,useContext} from 'react'
 
 import AuthContext from '../../store/auth-context'
 import Contests from '../../components/scheduler/Contests';
+import ErrorHandler from '../../components/ErrorHandler/ErrorHandler'
+import OpenSpinner from '../../components/Spinner/OpenSpinner'
+
+import './Scheduler.css'
 
 const map_urlname_to_returnname={
     codeforces:"CodeForces",
@@ -17,6 +21,7 @@ const map_urlname_to_returnname={
 
 
 const Scheduler=(props)=>{
+    console.log("Scheduler")
     
     const [listOfUpcomingContests,setListOfUpcomingContests]=useState(null);
     
@@ -35,29 +40,39 @@ const Scheduler=(props)=>{
     })
     const [showRemContestsOnly,setShowRemContestsOnly]=useState(false)
 
+    const [showError,setShowError] =useState(null)
+    const [loading,setLoading]=useState(false)
+
+
     const authCntx=useContext(AuthContext)
 
     useEffect(()=>{
-        // console.log("fetching data")                                                 
         const fetchData=async()=>{
-            // console.log("fetching between 1")
             let url=`https://kontests.net/api/v1/all`
+            setLoading(true)
             try{
                 const res= await fetch(url)
-                const parsedRes=await res.json();
+                
+                let parsedRes
                 if(!res.ok){
+                    if(res.statusText)
+                        throw new Error(res.statusText)
+                    parsedRes=await res.json();
                     throw new Error(parsedRes.error.message) ////////////////////////////////
                 }
-                // console.log("fetching between 2")
-                // /get-user-reminder-contests
+                parsedRes=await res.json();
+
                 url=`/get-user-reminder-contests?LocalId=${authCntx.localId}`
                 const userRemContests= await fetch(url)
-                const parsedURC= await userRemContests.json()
+                
+                let parsedURC
                 if(!userRemContests.ok){
+                    if(userRemContests.statusText)
+                        throw new Error(userRemContests.statusText)
+                    parsedURC= await userRemContests.json()
                     throw new Error(parsedURC.error.message)
                 }
-                // console.log(parsedURC)
-                // console.log("fetching between 3")
+                parsedURC= await userRemContests.json()
 
                 // add reminder status for each parsedRes's item
                 for(let i=0;i<parsedRes.length;i++){                                //******************************** */
@@ -72,11 +87,6 @@ const Scheduler=(props)=>{
                     for(let j=0;j<parsedURC.length;j++){
                         let d2=new Date(parsedURC[j].start_time).getTime() 
                         
-                        // console.log(parsedURC[j].name," ",itemToSearch.name," ",(parsedURC[j].name===itemToSearch.name))
-                        // console.log(parsedURC[j].site," ",itemToSearch.site," ",parsedURC[j].site===itemToSearch.site)
-                        // console.log(d2," ",itemToSearch.start_time," ",d2===itemToSearch.start_time)
-
-
                         if(parsedURC[j].name===itemToSearch.name
                             && parsedURC[j].site===itemToSearch.site 
                             && d2===itemToSearch.start_time )
@@ -93,10 +103,13 @@ const Scheduler=(props)=>{
                     }
                 
                 }
-
+                setLoading(false)
+                setShowError(null)
                 setListOfUpcomingContests(parsedRes)
             }catch(error){
                 console.log(error)
+                setLoading(false)
+                setShowError(error.message)
             }
         }
         fetchData();
@@ -190,7 +203,7 @@ const Scheduler=(props)=>{
 
     let showAllContests
     if(listOfUpcomingContests===null){
-        showAllContests=<p>Loading...</p>
+        showAllContests=null
     }else if(listOfSelectedContests.length!==0 ){
         showAllContests= <Contests 
                             listOfSelectedContests={listOfSelectedContests}
@@ -198,142 +211,171 @@ const Scheduler=(props)=>{
                             updateReminderStatusAfterRemRemove={updateReminderStatusAfterRemRemove}
                             updateReminderStatusAfterRemAddition={updateReminderStatusAfterRemAddition}/>
     }else{
-        showAllContests=<p>No contests to found</p>
+        showAllContests=<p>No contests found</p>
     }
 
-    
     return(
-        <div>
-            Hello I am Scheduler
-            
-            <hr/>
-            <p>Filters</p>
+        <div  className="Scheduler-container">
+            {loading?<OpenSpinner/>:null}
 
-            <div>
+            {showError?<ErrorHandler errorMessage={showError} modelRemovedHandler={()=>setShowError(null)} />:null}
 
-                <form>
-                    <label>
-                    <input
-                        name="codeforces"
-                        type="checkbox"
-                        checked={selectedPlatforms.codeforces}
-                        onChange={handleInputChange} />
-                    CodeForces
-                    </label>
-                    <br />
-
-                    <label>
-                    <input
-                        name="code_chef"
-                        type="checkbox"
-                        checked={selectedPlatforms.code_chef}
-                        onChange={handleInputChange} />
-                    CodeChef
-                    </label>
-                    <br />                
-
-                    <label>
-                    <input
-                        name="hacker_rank"
-                        type="checkbox"
-                        checked={selectedPlatforms.hacker_rank}
-                        onChange={handleInputChange} />
-                    HackerRank
-                    </label>
-                    <br />                
-                    
-                    <label>
-                    <input
-                        name="hacker_earth"
-                        type="checkbox"
-                        checked={selectedPlatforms.hacker_earth}
-                        onChange={handleInputChange} />
-                    HackerEarth
-                    </label>
-                    <br />                
-                    
-                    <label>
-                    <input
-                        name="leet_code"
-                        type="checkbox"
-                        checked={selectedPlatforms.leet_code}
-                        onChange={handleInputChange} />
-                    LeetCode
-                    </label>
-                    <br />
-
-                    <label>
-                    <input
-                        name="kick_start"
-                        type="checkbox"
-                        checked={selectedPlatforms.kick_start}
-                        onChange={handleInputChange} />
-                    Kick Start
-                    </label>
-                    <br />                
-                    
-                    <label>
-                    <input
-                        name="top_coder"
-                        type="checkbox"
-                        checked={selectedPlatforms.top_coder}
-                        onChange={handleInputChange} />
-                    TopCoder
-                    </label>
-                    <br />                
-                    
-                    <label>
-                    <input
-                        name="at_coder"
-                        type="checkbox"
-                        checked={selectedPlatforms.at_coder}
-                        onChange={handleInputChange} />
-                    AtCoder
-                    </label>
-                    <br />  
-
-                    <label>
-                    <input
-                        name="cs_academy"
-                        type="checkbox"
-                        checked={selectedPlatforms.cs_academy}
-                        onChange={handleInputChange} />
-                    CS Academy
-                    </label>
-                    <br />
-
-                    <label>
-                    <input
-                        name="showRemCont"
-                        type="checkbox"
-                        checked={showRemContestsOnly}
-                        onChange={handleShowRemContCHnage} />
-                    Reminder Added Contests
-                    </label>
-                    <br />
-                </form>
-
+            <div className="Scheduler-left-side-contest-lists">
+                {/* List of all contests here */}
+                <p className="text-primary font-weight-bold">All Upcoming Contests</p>
+                {showAllContests}
             </div>
 
-            <p>Time choose</p>
+            <div className="Scheduler-right-side-filters text-secondary-scheduler">
 
-            <label>
-                Lower bound:
-            <input type="date" name="lower" onChange={timeChangeHandler} />
-            </label>
-            <label>
-                Upper bound:
-            <input type="date" name="upper" onChange={timeChangeHandler} />
-            </label>
+                {/* contests filter here */}
+                <p className="text-primary font-weight-bold">Filters</p>
+                <div>
+                    <form>
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="codeforces"
+                                type="checkbox"
+                                checked={selectedPlatforms.codeforces}
+                                onChange={handleInputChange} />
+                            CodeForces
+                            </label>
+                        </div>
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="code_chef"
+                                type="checkbox"
+                                checked={selectedPlatforms.code_chef}
+                                onChange={handleInputChange} />
+                            CodeChef
+                            </label>
+                        </div>
 
 
-            <hr/>
-            <p>All contests</p>
-            {showAllContests}
-            
-            
-            <hr/>
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="hacker_rank"
+                                type="checkbox"
+                                checked={selectedPlatforms.hacker_rank}
+                                onChange={handleInputChange} />
+                            HackerRank
+                            </label>
+                        </div>
 
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="hacker_earth"
+                                type="checkbox"
+                                checked={selectedPlatforms.hacker_earth}
+                                onChange={handleInputChange} />
+                            HackerEarth
+                            </label>
+                        </div>
+
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="leet_code"
+                                type="checkbox"
+                                checked={selectedPlatforms.leet_code}
+                                onChange={handleInputChange} />
+                            LeetCode
+                            </label>    
+                        </div>
+
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="kick_start"
+                                type="checkbox"
+                                checked={selectedPlatforms.kick_start}
+                                onChange={handleInputChange} />
+                            Kick Start
+                            </label>
+                        </div>
+
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="top_coder"
+                                type="checkbox"
+                                checked={selectedPlatforms.top_coder}
+                                onChange={handleInputChange} />
+                            TopCoder
+                            </label>
+                        </div>
+                        
+                        
+                        
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="at_coder"
+                                type="checkbox"
+                                checked={selectedPlatforms.at_coder}
+                                onChange={handleInputChange} />
+                            AtCoder
+                            </label>
+                        </div>
+
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="cs_academy"
+                                type="checkbox"
+                                checked={selectedPlatforms.cs_academy}
+                                onChange={handleInputChange} />
+                            CS Academy
+                            </label>
+                        </div>
+
+
+
+                        <div className="label-div">
+                            <label>
+                            <input
+                                name="showRemCont"
+                                type="checkbox"
+                                checked={showRemContestsOnly}
+                                onChange={handleShowRemContCHnage} />
+                            Reminder Added Contests
+                            </label>
+                        </div>
+
+                    </form>
+                </div>
+
+                {/*  Time filters here */}
+                <p className="text-primary font-weight-bold">Time</p>
+
+                <div className="label-div">
+                    <label>
+                        Lower bound:
+                        <input type="date" name="lower" onChange={timeChangeHandler} />
+                    </label>
+                </div>
+
+                <div className="label-div">
+                    <label>
+                        Upper bound:
+                        <input type="date" name="upper" onChange={timeChangeHandler} />
+                    </label>
+                </div>
+
+
+
+            </div>
 
         </div>
     )

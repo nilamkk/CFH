@@ -2,4 +2,115 @@
     display: flex;
     flex-direction: row;
 }
+.text-gray{
+    color: cadetblue;
+}
+.text-primary {
+    color: #4e73df!important;
+}
+.font-weight-bold {
+    font-weight: 700!important;
+}
+.text-secondary-scheduler {
+    color: #3477b3!important;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.font-increase-size{
+    font-size: medium;
+}
+.side-categories-header{
+    display: flex;
+    margin-bottom: 2em;
+    justify-content: space-between;
+}
+.side-categories-header .spanaa:hover{
+    cursor: pointer;
+}
 
+
+.OldProblems-container{
+    display: flex;
+    color: black;
+    min-height: 100vh;
+}
+.OldProblems-left-side-contents{
+    flex: 80%;
+    padding: 2em;
+}
+.OldProblems-left-side-contents p{
+    text-align: center;
+    font-size: 2rem;
+}
+
+
+/* Add problem input element */
+.add-pro-input-container{
+    margin-bottom: 2em;
+}
+.add-problem-container-div input{
+    width: 95%;
+    outline: none;
+    padding: 1em;
+    font-size: medium;
+    border-radius: 5px;
+    border: 1px solid mediumslateblue;
+}
+.side-categories-form input{
+    outline: none;
+    padding: 1em;
+    border-radius: 5px;
+    border: 1px solid mediumslateblue;
+}
+.side-categories-form input[type=text]:focus{
+    outline: none;
+    padding: 1em;
+    border-radius: 5px;
+    border: 1px solid lightskyblue;
+}
+
+.add-problem-container-div input[type=text]:focus{
+    width: 95%;
+    outline: none;
+    padding: 1em;
+    font-size: medium;
+    border:1px solid lightskyblue;
+}
+
+
+
+
+/* right side contents */
+.OldProblems-right-side-categories{
+    color: black;
+    flex: 20%;
+    padding: 2em;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.side-bar-category-element{
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+}
+
+.side-bar-category-element:hover{
+    background-color: rgb(208, 211, 211);
+}
+.side-bar-category-element span{
+    /* align-items: center; */
+    padding: 1em;
+}
+.side-bar-category-element span:hover{
+    /* align-items: center; */
+    padding: 1em;
+    color: rebeccapurple;
+}
+.side-bar-category-element .second:hover{
+    /* align-items: center; */
+    padding: 1em;
+    border-radius: 50%;
+    color: red;
+}
+.give-background-color{
+    background-color: rgb(208, 211, 211);
+}

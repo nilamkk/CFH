@@ -1,62 +1,124 @@
-import React,{Component} from 'react';
+import React,{Component,Fragment} from 'react';
 import ImageCard from './UI/Card/user-image-card';
+import UserGenInfo from '../components/UI/Card/user-gen-info'
 
+
+import './User-info.css'
+import '../components/Spinner/Spinner.css'
+import Spinner from './Spinner/Spinner';
 
 class User extends Component{
-  // for the time being I will do all with component state, but I have to convert all to redux
     state={
-        userData:null
+        userData:null,
+        userData2:null,
+        loading:false,
+        error:null
     }
     async componentDidMount(){
-        if(this.state.userData)
+        if(this.state.userData || this.state.error)
             return;
+        
+        this.setState({         
+            loading:true
+        })
+
+        let url=`https://codeforces.com/api/user.info?handles=${this.props.handle}${this.props.handle2?(";"+this.props.handle2):""}`
+
         try{
-            const res= await fetch(`https://codeforces.com/api/user.info?handles=${this.props.handle}`)
-            const parsedRes= await res.json()
+            const res= await fetch(url)
+            let parsedRes;
+            console.log("here1")
             if(!res.ok){
-                throw new Error(parsedRes.comment)
+                if(res.statusText){
+                    throw new Error(res.statusText)  // fetch error
+                }
+                parsedRes= await res.json()
+                throw new Error(parsedRes.comment)   // CF error
             }
+            parsedRes= await res.json()
+            console.log("here2")
+
             this.setState({
-                userData:parsedRes.result[0]
+                userData:parsedRes.result[0],
+                userData2:parsedRes.result[1],
+                loading:false,
+                error:null
             })    
         }catch(error){
-            console.log(error)
+            this.setState({
+                loading:false,
+                error:error.message
+            })
+            
+            console.log(error.message)
         }
     }
 
     render() {
         let userProfile
-        if(!this.state.userData){
-            userProfile="<Spinner/>"
+
+        if(!this.state.userData ){
+            if(this.state.error)
+                userProfile=<p>{this.state.error}</p>
+            else// loading
+                userProfile=(
+                    <Fragment>
+                    <div className="user-info-container-flex">
+                        <Spinner/>
+                        <Spinner/>
+                    </div>
+                </Fragment>
+                )
         }else{
-            userProfile=(
-                <div>
-                    <ImageCard 
-                        titlePhoto={this.state.userData.titlePhoto} 
-                        firstName={this.state.userData.firstName} 
-                        lastName={this.state.userData.lastName}  
-                        country={this.state.userData.country}
-                        city={this.state.userData.city}/>
+            if(!this.state.userData2){
+                userProfile=(
+                    <Fragment>
+                        <div className="user-info-container-flex">
+                            <ImageCard 
+                                titlePhoto={this.state.userData.titlePhoto} 
+                                firstName={this.state.userData.firstName} 
+                                lastName={this.state.userData.lastName}  
+                                country={this.state.userData.country}
+                                city={this.state.userData.city}/>
+    
+                            <UserGenInfo userData={this.state.userData}/>
+                        </div>
+                    </Fragment>
+                )
+            }else{
+                userProfile=(
+                    <Fragment>
+                        <div className="user-info-container-flex">
+                                <ImageCard 
+                                    titlePhoto={this.state.userData.titlePhoto} 
+                                    firstName={this.state.userData.firstName} 
+                                    lastName={this.state.userData.lastName}  
+                                    country={this.state.userData.country}
+                                    city={this.state.userData.city}
+                                    twoUsers={true}/>
+                                <ImageCard 
+                                    titlePhoto={this.state.userData2.titlePhoto} 
+                                    firstName={this.state.userData2.firstName} 
+                                    lastName={this.state.userData2.lastName}  
+                                    country={this.state.userData2.country}
+                                    city={this.state.userData2.city}
+                                    twoUsers={true}/>
+                        </div>
+                        <div className="user-info-container-flex">
+                            <UserGenInfo userData={this.state.userData} twoUsers={true}/>
+                            <UserGenInfo userData={this.state.userData2} twoUsers={true} />
+                        </div>
 
-                    {/* <img src={this.state.userData.titlePhoto} alt="User Image"/> */}
-                    {/* <p> First Name:{this.state.userData.firstName? this.state.userData.firstName :"Not available"  }</p>
-                    <p> Last Name:{this.state.userData.lastName ?this.state.userData.lastName:"Not available"  }</p> */}
-                    <p> Last online:{this.state.userData.lastOnlineTimeSeconds?  this.state.userData.lastOnlineTimeSeconds:  "Not available"  }</p>
-                    {/* <p> Country :{this.state.userData.country?this.state.userData.country:"Not available"}</p> */}
-                    {/* <p> City :{this.state.userData.city?this.state.userData.city:"Not available"}</p> */}
-                    <p> Rating :{this.state.userData.rating?this.state.userData.rating:"Not available"}</p>
-                    <p> Max rating:{this.state.userData.maxRating?this.state.userData.maxRating:"Not available"}</p>
-                    <p> Handle :{this.state.userData.handle?this.state.userData.handle:"Not available"}</p>
-                    <p> Rank:{this.state.userData.rank?this.state.userData.rank:"Not available"}</p>
-                    <p> Best rank:{this.state.userData.maxRank?this.state.userData.maxRank:"Not available"}</p>
-                </div>
-            )
+                    </Fragment>
+                )
+            }
+
+
         }
-
         return (
-        <div>
-            {userProfile}
-        </div>
+            <div>
+                {userProfile}
+            </div>
         );
     }
     

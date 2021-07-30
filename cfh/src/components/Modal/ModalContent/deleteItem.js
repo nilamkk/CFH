@@ -6,7 +6,8 @@ const Delete=props=>{
             All the problems under this category will be deleted. Still wana delete it?
             <Button
                 type="button"
-                clickHandler={props.clickDeleteHandler}>Yes</Button>
+                clickHandler={props.clickDeleteHandler}
+                colorName={"Blue"}>Yes</Button>
         </div>
     )
 }

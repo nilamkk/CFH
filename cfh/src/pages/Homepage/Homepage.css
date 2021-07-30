@@ -1,3 +1,84 @@
 .text-alignment-centre{
     text-align: center;
 }
+.text-primary {
+    color: #4e73df!important;
+}
+.text-gray{
+    color: cadetblue;
+    text-align: center;
+}
+.log-sign-container{
+
+    width: 340px;
+    box-sizing: border-box;
+    margin: 50px auto;
+}
+
+.log-sign-form{
+    display: block;
+    box-sizing: border-box;
+    margin-top: 0em;
+    margin-bottom: 15px;
+    background: #f7f7f7;
+    box-shadow: 0px 2px 2px rgb(0 0 0 / 30%);
+    padding: 30px;
+
+    width: 340px;
+    font-size: 15px;
+}
+
+.log-sign-form h2{
+    margin: 0 0 15px;
+    text-align: center!important;
+    font-size: 2rem;
+}
+
+.log-sign-form-group{
+    margin-bottom: 1rem;
+
+}
+
+.log-sign-form-group input{
+    width: 90%;
+    font-size: 1rem;
+    font-weight: 400;
+    padding: .4em;
+    padding-right: 5px;
+    padding-left: 5px;
+    border: 1px solid mediumslateblue;
+    outline: none;
+}
+.log-sign-form-group input:focus{
+    outline: none;
+    border: 1px solid lightskyblue;
+}
+
+.log-sign-form-group button{
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    min-height: 38px;
+    border-radius: 2px;
+    display: block;
+    width: 100%;
+
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+
+    outline: none;
+    border: 1px solid #007bff;
+}
+
+.log-sign-container span{
+    color: blue;
+    cursor: pointer;
+}
+
+.log-sign-form-group-para{
+    color: gray;
+    text-align: justify;
+    padding: 1em;
+}
+

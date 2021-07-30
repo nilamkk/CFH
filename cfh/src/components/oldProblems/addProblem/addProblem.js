@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged, switchMap,map,catchError } from "rx
 
 import Input from "../../Inputs/Input";
 import Resultsfetched from "./results";
-
+import Spinner from "../../Spinner/Spinner";
 
 const AddProblem=props=>{
 
@@ -18,7 +18,6 @@ const AddProblem=props=>{
 
     const problemRef=useRef(null)
 
-    ////////////////////////////////////////////////////////////////////
     const setCategoryOfAddedProblem=(problemId,categoryToAdd)=>{
         let newData=[...state.data]
         for(let i=0;i<newData.length;i++){
@@ -35,8 +34,8 @@ const AddProblem=props=>{
     }
 
     useEffect(()=>{
-        if(subject==null){
-            const newSubject=new BehaviorSubject('')////////////////
+        if(subject===null){
+            const newSubject=new BehaviorSubject('') 
             setSubject(newSubject)
         }else{
             const observable=subject.pipe(
@@ -51,14 +50,15 @@ const AddProblem=props=>{
                         of({loading:true,error:null,noResult:false}),
                         fetch('/get-problem-by-name?name='+term+'&LocalId='+props.LocalId)
                         .then((res)=>{
-                            console.log("the term is: ",term)
+                            console.log("the term is here: ",term)
                             if(res.ok){
                                 return res
                                         .json()
                                         .then(data=>({
                                             data,
                                             loading:false,
-                                            noResult:data.length===0
+                                            noResult:data.length===0,
+                                            error:null
                                         }))
                             }
 
@@ -67,18 +67,21 @@ const AddProblem=props=>{
                                     .then(data=>({
                                         data:[],
                                         loading:false,
-                                        error:data ////////////////////////////////////
+                                        error:data   // no use
                                     }))
                         })
                     ),
                     of({loading:false,error:null,noResult:false,data:[]})
                     )
                 ),
-                catchError(e=>({
+                catchError(e=>of({
                     loading:false,
-                    error:'Error occured!!!'
+                    error:"Something went wrong!!!",
+                    noResult:false,
+                    data:[]
                 }))
             ).subscribe(newState=>{
+                console.log(newState)
                 setState(s=>Object.assign({},s,newState))
             })
 
@@ -95,7 +98,7 @@ const AddProblem=props=>{
         }
     }
 
-    let Results=<p>LOADING...</p>
+    let Results=<Spinner/>
     if(state.error){
         Results=<p>{state.error}</p>
     }else if(state.noResult){
@@ -111,13 +114,16 @@ const AddProblem=props=>{
     }
 
     return(
-        <div>
-            <Input 
-                type="text" 
-                htmlFor="add-problem" 
-                placeHolder="Search a problem"
-                refer={problemRef}
-                onChnageHandler={onChnageHandler}/>
+        <div className="add-problem-container-div">
+            <div className="add-pro-input-container">
+                <Input 
+                    type="text" 
+                    htmlFor="add-problem" 
+                    placeHolder="Search a problem"
+                    refer={problemRef}
+                    onChnageHandler={onChnageHandler}/>
+            </div>
+
 
             {Results}
             

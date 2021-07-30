@@ -5,8 +5,11 @@ const NavElement =(props)=>{
         <NavLink
             to={props.moveTo}
             exact
-            activeClassName="my-active">
+            activeClassName="my-active"
+            className={props.classNameToAdd}
+            >
             {props.children}
+            
         </NavLink>
     )
 }

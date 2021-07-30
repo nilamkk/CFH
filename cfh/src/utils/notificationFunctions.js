@@ -26,7 +26,7 @@ const configurePushSub=async (LocalId)=>{
             console.log("already exist")
             return;
         }
-        let publicVapidKey=process.env.PUSH_PUBLIC_KEY
+        let publicVapidKey=process.env.REACT_APP_PUSH_PUBLIC_KEY
         let convertedPublicVapidKey=urlBase64ToUint8Array(publicVapidKey)
 
         let newSub= await swreg.pushManager.subscribe({     

@@ -10,13 +10,17 @@
     border-radius: .35rem;
     word-wrap: break-word;
     border: 1px solid #e3e6f0;
-    width: 70%;
+    /* width: 70%; */
     height: 50%;
     min-height: 500px;
     text-align: center;
     margin: auto;
     margin-bottom: 10px;
     padding-bottom: 10px;
+    width: 100%;
+}
+.card-two-user{
+    margin: 1em;
 }
 .card-header{
     padding: .75rem 1.25rem;
@@ -26,5 +30,7 @@
 }
 
 .card-body{
-    padding: 50px;
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: #f8f9fc;
 }

@@ -12,7 +12,8 @@ const Categories=(props)=>{
                             category={item} 
                             setCategories={props.setCategories}
                             LocalId={props.LocalId}
-                            setSelectedCategory={props.setSelectedCategory}/>
+                            setSelectedCategory={props.setSelectedCategory}
+                            selectedCategory={props.selectedCategory}/>
                 )
         }
     

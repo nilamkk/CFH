@@ -1,17 +1,21 @@
 import moment from 'moment'
-import { Fragment,useState } from 'react'
+import { Fragment,useEffect,useState } from 'react'
 
 import Modal from '../Modal/Modal'
 import Button from '../Buttons/Button'
 import ReminderModalContent from '../Modal/ModalContent/addReminderModalContent'
 import './scheduler.css'
 import {askNotificationPermission} from '../../utils/notificationFunctions'
-
+import {getDurationFormat} from '../../utils/functions'
+import UserInfoRow from '../UI/Card/user-info-row'
+import OpenSpinner from '../Spinner/OpenSpinner'
 
 const Contest=props=>{
 
     const [showModal,setShowModal]=useState(false)
     const [notiPermission,setNotiPermission]=useState(null)   //// used to decide modal content
+    const [showFullContestInfo,setShowFullContestInfo]= useState(false)
+    const [loading,setLoading]= useState(false)
 
     let contestInfo=props.contestInfo
 
@@ -21,22 +25,25 @@ const Contest=props=>{
     const removeModalHandler=()=>{
         setShowModal(state=>false)
     }
+
     const saveReminderToDB=async()=>{      
         // add reminder to db
-        if( !(moment().add(70,'minutes')<= moment(contestInfo.start_time)) ){
+        // (new Date().getTime()+70*60*1000) <= (new Date(contestInfo.start_time).getTime())
+        if( !(  moment().add(70,'minutes')<= moment(contestInfo.start_time)       ) ){
             setNotiPermission("TooLate")
             showModalHandler()
             return;
         }
+        setLoading(true)
         try{
-            const res=await fetch('/set-contest-reminder',{            
+            const res=await fetch('/set-contest-reminder',{                 
                 method:"POST", 
                 headers:{
                     'Content-Type':'application/json'
                 },
                 body:JSON.stringify({
                     LocalId:props.LocalId,
-                    notification_time: moment(contestInfo.start_time).subtract(60,'minutes'),
+                    notification_time: moment(contestInfo.start_time).subtract(60,'minutes'),  ///////////// risk ase
                     ContestInfo:{
                         name:contestInfo.name,
                         site:contestInfo.site,
@@ -44,23 +51,31 @@ const Contest=props=>{
                     }
                 })                                        
            })
-           const parsedRes=await res.json()
+           
+           let parsedRes
            if(!res.ok){
-               throw new Error(parsedRes.error.message)
+                if(res.statusText)
+                    throw new Error(res.statusText)
+                parsedRes=await res.json()
+                throw new Error(parsedRes.error.message)
            }
+           parsedRes=await res.json()
+
            // update the list of contests
            props.updateReminderStatusAfterRemAddition(parsedRes)
 
            // show added reminder modal
            setNotiPermission("ReminderAdded")
            showModalHandler()
+           setLoading(false)
         }catch(error){
-            console.log(error)
+            setNotiPermission("error")
+            showModalHandler()
+            setLoading(false)
         }
-
-
-        console.log("Added !!!")
     }
+
+    // checks some cases of permission for notification
     const setRemiBtnHandler=async ()=>{
         if( !(moment().add(70,'minutes')<= moment(contestInfo.start_time)) ){   
             setNotiPermission("TooLate")
@@ -93,18 +108,24 @@ const Contest=props=>{
                 showModalHandler()
             }
         }catch(error){
-            console.log(error)
+            setNotiPermission("error")
+            showModalHandler()
         }
     }
+    
+
     const removeRemiBtnHandler=()=>{
         setNotiPermission("reallyRemoveReminder?")
         showModalHandler()
     }
+
+
     const removeReminderFromDB=async()=>{
         try{
+            setLoading(true)
             let url=`/remove-user-reminder-contest`
             // req to remove reminder
-            const result= await fetch(url,{            
+            const result= await fetch(url,{             /////////////////////////////////////////////////
                 method:"POST", 
                 headers:{
                     'Content-Type':'application/json'
@@ -120,18 +141,25 @@ const Contest=props=>{
                 })                                        
             })
 
-            const parsedRes=await result.json()
+            let parsedRes
             if(!result.ok){
+                if(result.statusText)
+                    throw new Error(result.statusText)
+                parsedRes=await result.json()
                 throw new Error(parsedRes.error.message)
             }
+            parsedRes=await result.json()
+
             // then update the original list too
             props.updateReminderStatusAfterRemRemove(parsedRes)
             // set removed modal
             setNotiPermission("reminderRemoved")
             showModalHandler()
-        
+            setLoading(false)
         }catch(error){
-            console.log(error)
+            setNotiPermission("error")
+            showModalHandler()
+            setLoading(false)
         }
 
     }
@@ -179,34 +207,72 @@ const Contest=props=>{
                         content="Reminder removed !!!"
                         btnContent="Ok"
                         clickHandler={removeModalHandler}/>
+    }else if(notiPermission==="error"){
+        ModalContent=<ReminderModalContent 
+                        content="Something went wrong!!!"
+                        btnContent="Ok"
+                        clickHandler={removeModalHandler}/>
     }
 
 
     let SetRemiBtn=null
     // showing the btn only if atleast 1 hour is left to start
     if(contestInfo.reminderAdded===true){
-        SetRemiBtn= <Button type="button" clickHandler={ removeRemiBtnHandler } Danger={true} >Remove reminder</Button>
+        SetRemiBtn= <Button type="button" clickHandler={ removeRemiBtnHandler } Danger={true}  >Remove reminder</Button>
     }else if( moment().add(70,'minutes')<= moment(contestInfo.start_time) ){
-        SetRemiBtn= <Button type="button" clickHandler={setRemiBtnHandler} >Set Reminder Before 1 hr</Button>
+        SetRemiBtn= <Button type="button" clickHandler={setRemiBtnHandler} colorName={"Blue"}>Set Reminder Before 1 hr</Button>
+    }
+
+
+    let ContestDetails=null
+    // deciding contest info all
+    if(showFullContestInfo){
+        ContestDetails=(
+            <div className="card-body-user-gen-info">
+                <UserInfoRow Attribute={"Name"} Value={contestInfo.name?contestInfo.name:"Not available"} />
+                <hr className="hr-user-gen-info"/>
+
+                <UserInfoRow Attribute={"Start time"} Value={moment(contestInfo.start_time).format('Do MMMM YYYY, h:mm a')?moment(contestInfo.start_time).format('Do MMMM YYYY, h:mm a'):"Not available"} />
+                <hr className="hr-user-gen-info"/>
+                
+                <UserInfoRow Attribute={"Duration"} Value={contestInfo.duration?getDurationFormat(contestInfo.duration):"Not available"} />
+                <hr className="hr-user-gen-info"/>
+
+                <UserInfoRow Attribute={"Site"} Value={contestInfo.site?contestInfo.site:"Not available"} />
+                <hr className="hr-user-gen-info"/>                
+
+                <UserInfoRow Attribute={"In 24 hours"} Value={contestInfo.in_24_hours?contestInfo.in_24_hours:"Not available"} />
+                <hr className="hr-user-gen-info"/>
+
+                <div className="setRemi-GoToContest-btn" >
+                    {SetRemiBtn}
+                    <a href={contestInfo.url} onClick={e=>e.stopPropagation() } target="_blank" rel="noreferrer" > <span onClick={e=>e.stopPropagation()}> Go To Contest </span> </a>  
+                </div>
+            </div>
+        )
+    }else{
+        ContestDetails=(
+            <div className="only-name-div">
+                <span>{contestInfo.name}</span>
+            </div>
+        )
+    }
+
+    const ContestDetailsHandler=(e)=>{
+        setShowFullContestInfo(state=>!state)
     }
 
     return (
 
         <Fragment>
+            {loading?<OpenSpinner/>:null}
             {showModal? <Modal show={showModal} 
                                 modelRemoved={removeModalHandler}> {ModalContent} </Modal>  :null}
 
-            <div className="contest-box"> 
-                <p>Name: {contestInfo.name}</p>
-                <p>URL: {contestInfo.url}</p>
-                <p>Start time: {moment(contestInfo.start_time).format('Do MMMM YYYY, h:mm a') }</p>
-                <p>Duration: {contestInfo.duration}</p>
-                <p>Site: {contestInfo.site}</p>
-                <p>In 24 hours: {contestInfo.in_24_hours}</p>
-
-                {SetRemiBtn}
-
+            <div className="card-user-gen-info" onClick={ContestDetailsHandler}   >
+                {ContestDetails}
             </div>
+
         </Fragment>
 
     )

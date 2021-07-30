@@ -84,11 +84,75 @@ const getRatingProblemsDist=(result)=>{
         }
     })
 
-    console.log("No of OK questions: ",cnttt)
+    // console.log("No of OK questions: ",cnttt)
 
     return dataToSend
 }
 
+const getTimeFormat=(unix_timestamp)=>{
+    // Create a new JavaScript Date object based on the timestamp
+    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+    let date = new Date(unix_timestamp * 1000 );
+    // Hours part from the timestamp
+    let hours = date.getHours();
+    // Minutes part from the timestamp
+    let minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    let seconds = "0" + date.getSeconds();
 
+    let dates= date.getDate()
+    let month= date.getMonth()+1
+    let year= date.getFullYear()
 
-module.exports={getCategory,getRatingProblemsDist}
+    // Will display time in 10:30:23 format
+    let formattedTime = dates+'/'+month+'/'+year+'   '+hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+    return formattedTime
+}
+const getDurationFormat=(timeInSeconds)=>{
+    let minutes,hours, days,months,format=""
+
+    minutes= timeInSeconds/60
+
+    hours= Math.floor(minutes/60)
+
+    days= Math.floor(hours/24)
+
+    months= Math.floor(days/30)
+
+    if(minutes>60){
+        minutes= minutes%60
+    }
+    if(hours>24){
+    hours= hours%24
+    }
+    if(days>30){
+        days= days%30
+    }
+    if(months)
+        format= months+" months "
+
+    if(days)
+        format+= days+" days "
+
+    if(hours)
+    format+= hours+" hrs "
+
+    if(minutes){
+        format += (minutes+" mins")
+    }
+
+    return format
+
+}
+
+const getDateMonthYear=(timeInMS)=>{
+    const d= new Date(timeInMS)
+    const date= d.getDate()
+    const month= d.getMonth()+1
+    const year= d.getFullYear()
+
+    return (d+"/"+month+"/"+year)
+}
+
+module.exports={getCategory,getRatingProblemsDist,getTimeFormat,getDurationFormat,getDateMonthYear}

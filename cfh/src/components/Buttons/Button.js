@@ -21,8 +21,10 @@ const Button=(props)=>{
             type={props.type} 
             onClick={props.clickHandler}
             className={classes.join(" ")}
-            disabled={props.disable}>
+            disabled={props.disable}
+            style={{color:props.colorName}}>
             {props.children}
+            
          </button>
      )
  }

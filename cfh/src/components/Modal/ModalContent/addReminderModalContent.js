@@ -12,7 +12,7 @@ const ReminderModalContent=(props)=>{
                 </div>
             ):null}
 
-            <Button type="button"  clickHandler={props.clickHandler}>{props.btnContent}</Button>
+            <Button type="button" colorName={"Blue"}  clickHandler={props.clickHandler}>{props.btnContent}</Button>
         </div>
     )
 

@@ -1,0 +1,33 @@
+.compare-handles-form{
+    display: flex;
+    padding: 2em;
+    justify-content: center;
+}
+.compare-handles-form input{
+    outline: none;
+    padding: .5em;
+    font-size: medium;
+    border-radius: 5px;
+    border: 1px solid mediumslateblue;
+    margin: 1em;
+}
+
+.compare-handles-form input:hover{
+    outline: none;
+    padding: .5em;
+    border-radius: 5px;
+    border: 1px solid lightskyblue;
+}
+
+.compare-handles-form button{
+    padding: .5em;
+    margin: 1em;
+    outline: none;
+    border: 1px solid ;
+    cursor: pointer;
+    border-radius: 2px;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    width: 150px;
+}

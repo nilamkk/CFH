@@ -1,0 +1,23 @@
+.user-info-container-flex{
+    display: flex;
+    padding-right: 2em;
+    padding-left: 2em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    /* justify-content: space-evenly; */
+    align-items: stretch;
+}
+
+
+@media screen and (max-width:500px){
+    .user-info-container-flex{
+        display: flex;
+        flex-direction: column;
+        padding-right: 2em;
+        padding-left: 2em;
+        padding-top: 2em;
+        padding-bottom: 2em;
+        /* justify-content: space-evenly; */
+        /* align-items: stretch; */
+    }
+}

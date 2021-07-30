@@ -1,19 +1,26 @@
 import {useRef,useState,useContext,useEffect} from 'react'
 
-import * as classes from './oldProblems.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus,faMinus } from "@fortawesome/free-solid-svg-icons";
+
+import './oldProblems.css'
 import Input from '../../components/Inputs/Input'
 import Button from '../../components/Buttons/Button'
 import AuthContext from '../../store/auth-context'
 import Categories from '../../components/oldProblems/categories'
 import ShowProblems from '../../components/oldProblems/problems'
 import AddProblem from '../../components/oldProblems/addProblem/addProblem'
+import ErrorHandler from '../../components/ErrorHandler/ErrorHandler';
+import OpenSpinner from '../../components/Spinner/OpenSpinner';
 
 const OldProblems=(props)=>{
 
-    const [categories,setCategories] =useState(null)// categories is array of categories
+    const [categories,setCategories] =useState(null)             // categories is array of categories
     const [selectedCategory,setSelectedCategory]=useState(null)  //selectedCategory is an object
-
-    const [disableAddCatBtn,setDisableAddCatBtn]=useState(false)
+    const [showAddCatForm,setShowAddCatForm]= useState(false)   
+    const [disableAddCatBtn,setDisableAddCatBtn]=useState(false) 
+    const [oldError,setOldError ] =useState(null)
+    const [loading,setLoading]= useState(false)
 
     const nonZeroCategories=(categories && categories.length>0)===true
 
@@ -21,20 +28,29 @@ const OldProblems=(props)=>{
 
     const titleRef=useRef(null)
 
+    const modelReHandlerErr=(e)=>{
+        e.stopPropagation()
+        setOldError(false)                                                          //////////////// error is there but removed modal
+    }
+
     // to show the categories on loading
     useEffect(()=>{
-        const fetchData=async()=>{                                  ////////////////**************** */
+        const fetchData=async()=>{                                  
             let url=`/get-category?LocalId=${authCntx.localId}`
             try{
                 const result= await fetch(url)
-                const parsedResult=await result.json()
+                let parsedResult
                 if(!result.ok){
+                    if(result.statusText)
+                        throw new Error(result.statusText)
+                    parsedResult=await result.json()
                     throw new Error(parsedResult.error.message)
                 }
-                console.log("get category is called")
+                parsedResult=await result.json()
+
                 setCategories(parsedResult)
             }catch(error){
-                console.log(error)
+                setOldError(error.message)
             }
         }
         fetchData()
@@ -42,7 +58,8 @@ const OldProblems=(props)=>{
     // to add new category
     const addFormSubmitHandler=async (event)=>{
         event.preventDefault()
-        
+        setLoading(true)
+        // only valid titleOfTheCategory will come
         let titleOfTheCategory=titleRef.current.value.trim()
         titleOfTheCategory=titleOfTheCategory.trim().toUpperCase()
 
@@ -58,14 +75,22 @@ const OldProblems=(props)=>{
                 })
             })
 
-            const parsedRes= await result.json()
+            let parsedRes
             if(!result.ok){
-                throw new Error(parsedRes.error.message) //////////////////////
+                if(result.statusText)
+                    throw new Error(result.statusText)
+                parsedRes= await result.json()
+                throw new Error(parsedRes.error.message) 
             }
+            setLoading(false)
+            parsedRes= await result.json()
             setCategories(parsedRes)
-
+            titleRef.current.value=""
+            setOldError(null)
         }catch(error){
-            console.log(error)
+            setLoading(false)
+            console.log(error.message)                                  //////////////////////// to show & set error
+            setOldError(error.message)
         }
 
 
@@ -95,62 +120,95 @@ const OldProblems=(props)=>{
 
     }
 
+    const showAddCatFormHandler=(event)=>{
+        event.stopPropagation()
+        setShowAddCatForm(state=>!state)
+    }
 
     let showAllCategories=<p>No Categories to show</p>
 
-    if(categories && categories.length>0){
+    if(categories && categories.length>0){     
         showAllCategories=<Categories 
                             categories={categories} 
                             setCategories={setCategories} 
                             LocalId={authCntx.localId}
-                            setSelectedCategory={setSelectedCategory}/>
+                            setSelectedCategory={setSelectedCategory}
+                            selectedCategory={selectedCategory}/>
     }
 
     let showSelectedCategoryProblems=<p>Not Selected Yet</p>
 
     if(selectedCategory ){
-        showSelectedCategoryProblems=<ShowProblems selectedCategory={selectedCategory} />
+        // showSelectedCategoryProblems=<ShowProblems selectedCategory={selectedCategory} />
+        showSelectedCategoryProblems=(
+            <div className="OldProblems-left-side-contents">
+                <p className="text-primary font-weight-bold" > {selectedCategory.title} </p>
+
+                <ShowProblems selectedCategory={selectedCategory} /> 
+
+            </div>
+        ) 
     }
 
 
     return(
-        <div className={classes.parentFlex}>
-            Hello I am OldProblems
+
+        <div className="OldProblems-container">
+
+            {loading?<OpenSpinner/>:null}
+
+
+            {oldError? <ErrorHandler errorMessage={oldError} modelRemovedHandler={modelReHandlerErr} />  : null }
             
-            <hr/>
-            <h5>Add Category Form</h5>
+            {/* left side contents part starts here */}
 
-            <form onSubmit={addFormSubmitHandler} > 
-                <Input 
-                    type="title" 
-                    htmlFor="title-ip" 
-                    Label="Title" 
-                    refer={titleRef}
-                    onChnageHandler={categoryDuplicateCheck}/>
-                <Button type="submit" disable={disableAddCatBtn===true}>
-                    Add Category    
-                </Button>
-            </form>
+            {selectedCategory?showSelectedCategoryProblems:(
+                <div className="OldProblems-left-side-contents">
+                    <p className="text-primary font-weight-bold" > Add New Problem </p>
 
+                    <AddProblem 
+                        LocalId={authCntx.localId} 
+                        nonZeroCategories={nonZeroCategories}
+                        categories={categories}/>
+                </div>
 
-            <hr/>
-            <h5>show categories</h5>
-            {showAllCategories}
+            )}
 
 
-            <hr/>
-            <h5>show problems</h5>  
-            {showSelectedCategoryProblems}
+
+            {/* left side contents part finishes here */}
 
 
-            <hr/>
-            <h5>add problems</h5>
-            <AddProblem 
-                LocalId={authCntx.localId} 
-                nonZeroCategories={nonZeroCategories}
-                categories={categories}/>
+            <div className="OldProblems-right-side-categories text-primary">
 
-            <hr/>
+                <div className="side-categories-header">
+                    <span className="font-weight-bold font-increase-size">Your Categories</span>
+                    <span className="spanaa" onClick={showAddCatFormHandler}> <FontAwesomeIcon icon={ showAddCatForm?  faMinus :faPlus      } /> </span>
+                </div>
+
+                {showAddCatForm?(
+                
+                <div className="side-categories-form">   
+                    <form onSubmit={addFormSubmitHandler} > 
+                        <Input 
+                            type="title" 
+                            htmlFor="title-ip" 
+                            Label="Title" 
+                            refer={titleRef}
+                            onChnageHandler={categoryDuplicateCheck}/>
+                        <Button type="submit" disable={disableAddCatBtn===true} colorName={"Blue"}>
+                            Add Category    
+                        </Button>
+                    </form>
+                </div>
+                
+                ):null}
+
+                <div className="List-of-all-categories">
+                    {showAllCategories}
+                </div>
+
+            </div>
 
         </div>
     )

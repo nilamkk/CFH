@@ -39,9 +39,12 @@ img {
     border-radius: .35rem;
     word-wrap: break-word;
     border: 1px solid #e3e6f0;
-    width: 30%;
-    height: 50%;
+    /* height: 100%; */
+    align-self: stretch;
     min-height: 150px;
+    flex: 30%;
+    min-width: 30%;
+    margin-right: 1em;
 }
 .card-header-user-image{
     padding: .75rem 1.25rem;
@@ -51,4 +54,23 @@ img {
 }
 .card-body-user-image{
     padding: 1em;
+}
+.card-user-image-fifty{
+    flex: 50%;
+    margin: 1em;
+}
+
+@media screen and (max-width:500px){
+    .card-user-image{
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: .35rem;
+        word-wrap: break-word;
+        border: 1px solid #e3e6f0;
+        /* height: 100%; */
+        width: 100%;
+        min-height: 150px;
+        min-width: 30%;
+        margin-bottom: 1em;
+    }
 }

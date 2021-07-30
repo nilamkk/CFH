@@ -1,28 +1,18 @@
 import React,{Component} from 'react';
 
-import Spinner from '../Spinner/Spinner';
 import CanvasJSReact from '../../assets/canvasjs.react'
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class BarChart extends Component{
-    state={
-        dataPoints:null,
-        error:null,
-        loading:false
-    }
+    // this.props.chartTitle 
+    // this.props.dataPoints 
 
-    async componentDidMount(){
-        if(this.state.dataPoints || this.state.error)
-            return;
-        this.setState({
-            loading:true
-        })
+    render() {
 
-        let handle=this.props.handle
-        try{
+
             let data=null
 
-            data= await this.props.getData(handle)
+            data= this.props.dataPoints   /////// this.props.dataPoints
 
             let dataPoints=[]
             // dataPoints=[                                                                          
@@ -42,34 +32,6 @@ class BarChart extends Component{
                     y: parseInt(data[prop])  
                 })
             } 
-
-            this.setState({
-                dataPoints:dataPoints,
-                loading:false,
-                error:null
-            }) 
-
-        }catch(error){
-            this.setState({
-                loading:false,
-                error:error.message
-            })
-        }
-    }
-
-    render() {
-
-        let desiredChart
-
-        if(!this.state.dataPoints){
-            if(this.state.error){
-                desiredChart=<p style={{color:'black'}}>{this.state.error}</p>
-            }else{
-                desiredChart=<Spinner/>
-            }
-        }else if(this.state.dataPoints.length===0){
-            desiredChart=<p>No data available</p>
-        }else{
             let type=""
             let axisX,axisY,toolTip,legend,showInLegend,legendText
             let Options
@@ -94,7 +56,7 @@ class BarChart extends Component{
                 // exportEnabled: true,
                 animationEnabled: true,
                 title:{
-                    text: this.props.chartTitle
+                    text: this.props.chartTitle             /////////// this.props.chartTitle 
                 },
                 axisX: {...axisX},
                 axisY: {...axisY},
@@ -104,15 +66,13 @@ class BarChart extends Component{
                     showInLegend: showInLegend,              
                     legendText: legendText,                                 
                     type: type,                                               
-                    dataPoints: this.state.dataPoints
+                    dataPoints: dataPoints
                 }]
             }   
-            desiredChart=<CanvasJSChart options = {Options}/>
-        }
 
         return (
             <div>
-                {desiredChart}
+                <CanvasJSChart options = {Options}/>
             </div>
         );
     }

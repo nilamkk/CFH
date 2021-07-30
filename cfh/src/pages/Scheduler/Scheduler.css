@@ -1,0 +1,49 @@
+.text-primary {
+    color: #4e73df!important;
+}
+.font-weight-bold {
+    font-weight: 700!important;
+}
+.text-secondary-scheduler {
+    color: #3477b3!important;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.Scheduler-container{
+    color: black;
+    display: flex;
+}
+
+.Scheduler-right-side-filters{
+    align-self: flex-start;
+    color: black;
+    flex: 20%;
+    padding: 2em;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+}
+.Scheduler-right-side-filters .label-div{
+    margin: 10px;
+    padding: 10px;
+}
+.Scheduler-right-side-filters p{
+    /* color: ; */
+    /* box-shadow: ; */
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.5rem;
+}
+
+.Scheduler-left-side-contest-lists{
+    color: black;
+    padding: 2em;
+    flex: 80%;
+}
+
+.Scheduler-left-side-contest-lists p{
+    text-align: center;
+    font-size: 2rem;
+}

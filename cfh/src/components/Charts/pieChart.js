@@ -1,6 +1,7 @@
 // Canvasjs chart
 import React,{Component} from 'react';
 
+import Spinner from '../Spinner/Spinner';
 import CanvasJSReact from '../../assets/canvasjs.react'
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -29,20 +30,24 @@ class PieChart extends Component{
   
     state={
         dataPoints:null,
-        toolTip:null
+        loading:false,
+        error:null
     }
 
     async componentDidMount(){
-        if(this.state.dataPoints)
+        if(this.state.dataPoints || this.state.error)
             return;
         let handle=this.props.handle
+        this.setState({
+            loading:true
+        })
 
         try{
             let data= await this.props.getData(handle)
 
             let dataPoints=[]
             for(let prop in data){
-                if(parseInt(data[prop])==0)
+                if(parseInt(data[prop])===0)
                     continue;
 
                 dataPoints.push({
@@ -54,11 +59,16 @@ class PieChart extends Component{
             }
 
             this.setState({
-                dataPoints:dataPoints
+                dataPoints:dataPoints,
+                error:null,
+                loading:false
             }) 
 
         }catch(error){
-            console.log(error)
+            this.setState({
+                error:error.message,
+                loading:false
+            })
         }
     }
 
@@ -66,7 +76,11 @@ class PieChart extends Component{
         let desiredChart
 
         if(!this.state.dataPoints){
-            desiredChart="<Spinner/>"                                                  
+            if(this.state.error){
+                desiredChart=<p style={{color:'black'}}>{this.state.error}</p>
+            }else{
+                desiredChart= <Spinner/>                                               
+            }
         }else if(this.state.dataPoints.length===0){
             desiredChart=<p>No data available</p>
         }else{

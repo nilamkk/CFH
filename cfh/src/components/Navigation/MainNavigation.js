@@ -5,6 +5,8 @@ import NavElement from "./NavElement"
 import AuthContext from "../../store/auth-context";
 import Button from "../Buttons/Button";
 
+import '../Layout/Layout'
+
 const MainNav=(props)=>{
 
     const authCntx=useContext(AuthContext)
@@ -18,19 +20,41 @@ const MainNav=(props)=>{
     }
 
     return(
-        <header>
-            <h1>This is the CF helper</h1>
-            <nav>
-                <ul>
-                    <li> <NavElement moveTo="/profile"> Profile   </NavElement > </li>
-                    <li> <NavElement moveTo="/scheduler"> Scheduler </NavElement ></li>
-                    <li> <NavElement moveTo="/oldProblems"> Old Problems  </NavElement ></li>
-                    <li> <NavElement moveTo="/compare"> Compare</NavElement > </li>
-                    {!authCntx.isLoggedIn?<li> <NavElement moveTo="/home/auth"> Log in </NavElement > </li> :null}
-                    {authCntx.isLoggedIn?<li> <Button clickHandler={clickHandler}> Log out </Button > </li> :null}
+
+        <div className={  props.slideBarExpanded===false ?"side-nav-bar-collapse":"side-nav-bar"}>
+
+            <div className={props.slideBarExpanded===false?"side-nav-bar-collapse-it":""}>
+                <ul className="slide-nav-bar-list">
+                    <li>
+                        <NavElement moveTo="/profile" classNameToAdd="list-link"> <span>Profile</span>  </NavElement >
+                    </li>
+                    <hr className="side-divider"/>
+                    
+                    <li>
+                        <NavElement moveTo="/scheduler" classNameToAdd="list-link"> <span>Scheduler</span>  </NavElement >
+                    </li>
+                    <hr className="side-divider"/>
+                    
+                    <li>
+                        <NavElement moveTo="/oldProblems" classNameToAdd="list-link"> <span>Old Problems</span>  </NavElement >
+                    </li>
+                    <hr className="side-divider"/>
+
+                    <li>
+                        <NavElement moveTo="/compare" classNameToAdd="list-link"> <span>Compare</span>  </NavElement >
+                    </li>
+                    <hr className="side-divider"/>
+
+                    {!authCntx.isLoggedIn?<li> <NavElement moveTo="/home/auth" classNameToAdd="list-link" colorName={"white"}> <span>Log in</span>  </NavElement > </li> :null}
+                    {!authCntx.isLoggedIn? <hr className="side-divider"/>  :null}
+
+                    {authCntx.isLoggedIn?<li> <Button clickHandler={clickHandler} classNameToAdd="list-link" colorName={"white"}> <span>Log out </span> </Button > </li> :null}
+                    {authCntx.isLoggedIn?<hr className="side-divider"/>  :null   }
+                    
+            
                 </ul>
-            </nav>
-        </header>
+            </div>
+        </div>
     )
 }
 

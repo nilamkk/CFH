@@ -5,7 +5,7 @@ const ShowProblems=props=>{
     // props.selectedCategory
     let allProblems=<p>No problems yet</p>
 
-    if(props.selectedCategory.problems.length>0){
+    if(props.selectedCategory && props.selectedCategory.problems.length>0){
         allProblems= props.selectedCategory.problems.map(
             item=> {
                 let obj={
@@ -13,21 +13,19 @@ const ShowProblems=props=>{
                     category:props.selectedCategory.title
                 }
                 return <Problem 
-                        key={item._id}
-                        item={obj}
-                        nonZeroCategories={true}
-                        categories={[]}
-                        setCategoryOfAddedProblem={()=>{}}/>
+                            key={item._id}
+                            item={obj}
+                            nonZeroCategories={true}
+                            categories={[]}
+                            setCategoryOfAddedProblem={()=>{}}/>
             }
         )
     }
 
     return(
         <div>
-            <h3>{props.selectedCategory.title}</h3>
-
+            {/* <h3>{props.selectedCategory.title}</h3> */}
             {allProblems}
-
         </div>
     )
 }
