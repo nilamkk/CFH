@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "api folder for cfh",
   "main": "index.js",
+  "engines": {
+    "node": "13.x",
+    "npm": "6.13.7"
+  },
   "scripts": {
-    "start": "nodemon node index.js"
+    "start": "node index.js"
   },
   "author": "Nilam Kumar Kalita",
   "license": "ISC",
