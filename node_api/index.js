@@ -7,7 +7,6 @@ require('./db/addProblemsToDB.js')
 // the below is the scheduling part
 require('./utils/schedulingTasks')
 
-
 const express=require('express');
 const profileRouter=require('./routers/profile');
 const userRouter=require('./routers/user')
@@ -25,17 +24,10 @@ app.use(userRouter)
 app.use(oldProblemsRouter)
 
 
-
-
-
-
 app.get('/',(req,res)=>{
     res.send("Welcome to node_api !!!");
 })
 
-
 app.listen(PORT,()=>{
     console.log("Server running on ",PORT);
 })
-
-

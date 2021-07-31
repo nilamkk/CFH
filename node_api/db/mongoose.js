@@ -1,6 +1,6 @@
 const mongoose=require('mongoose')
 
-mongoose.connect(process.env.MONGO_CONNECTIN_STRING,{
+mongoose.connect(process.env.MONGODB_ATLAS_CLUSTER_STRING,{
     useNewUrlParser:true,
     useCreateIndex:true,
     useUnifiedTopology:true
