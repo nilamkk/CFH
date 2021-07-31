@@ -18,7 +18,7 @@ const AddProblemModal=(props)=>{
         try{
             setLoading(true)
             props.setProblemAddStatus("addingProblem")
-            const result=await fetch('/add-problems-to-category',{
+            const result=await fetch('https://code-buddy-cfh.herokuapp.com/add-problems-to-category',{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

@@ -36,7 +36,7 @@ const OldProblems=(props)=>{
     // to show the categories on loading
     useEffect(()=>{
         const fetchData=async()=>{                                  
-            let url=`/get-category?LocalId=${authCntx.localId}`
+            let url=`https://code-buddy-cfh.herokuapp.com/get-category?LocalId=${authCntx.localId}`
             try{
                 const result= await fetch(url)
                 let parsedResult
@@ -64,7 +64,7 @@ const OldProblems=(props)=>{
         titleOfTheCategory=titleOfTheCategory.trim().toUpperCase()
 
         try{
-            const result= await fetch('/add-category',{
+            const result= await fetch('https://code-buddy-cfh.herokuapp.com/add-category',{
                 method:"POST",
                 headers:{
                     'Content-Type':'application/json'

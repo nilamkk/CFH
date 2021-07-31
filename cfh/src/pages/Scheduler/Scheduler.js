@@ -62,7 +62,7 @@ const Scheduler=(props)=>{
                 }
                 parsedRes=await res.json();
 
-                url=`/get-user-reminder-contests?LocalId=${authCntx.localId}`
+                url=`https://code-buddy-cfh.herokuapp.com/get-user-reminder-contests?LocalId=${authCntx.localId}`
                 const userRemContests= await fetch(url)
                 
                 let parsedURC

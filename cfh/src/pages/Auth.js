@@ -138,7 +138,7 @@ const Auth=(props)=>{
             if(!logInBtn){
                 //signup
                 handleIp=handleRef.current.value.trim()
-                const user=await fetch('/create-user',{
+                const user=await fetch('https://code-buddy-cfh.herokuapp.com/create-user',{
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json'
@@ -158,7 +158,7 @@ const Auth=(props)=>{
             }else{
                 //login
                 console.log("getting handle")                    //////////////////////////////// ONLY THIS IS LEFT TO HANDLE
-                const Handle=await fetch('/get-handle',{
+                const Handle=await fetch('https://code-buddy-cfh.herokuapp.com/get-handle',{
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json'
