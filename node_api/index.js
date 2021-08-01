@@ -23,6 +23,8 @@ var corsOptions = {
   }
 }
 // Then pass them to cors:
+const app= express();
+
 app.use(cors(corsOptions));
 
 
@@ -31,7 +33,6 @@ const userRouter=require('./routers/user')
 const oldProblemsRouter=require('./routers/oldProblems')
 
 
-const app= express();
 
 const PORT= process.env.PORT
 
