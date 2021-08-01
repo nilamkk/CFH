@@ -3,9 +3,12 @@ import { useHistory } from "react-router";
 
 import AuthContext from "../store/auth-context";
 import isEmail from 'validator/lib/isEmail';
+import OpenSpinner from "../components/Spinner/OpenSpinner";
+
 const Auth=(props)=>{
 
     const [logInBtn,setlogInBtn]= useState(true)
+    const [loading,setLoading]= useState(false)
     const [forgotPwState,setForgotPwState]=useState(false)
     const [errorMessage, setErrorMessage]=useState(null)
     const [successMessage,setSuccessMessage]=useState(null)
@@ -35,6 +38,7 @@ const Auth=(props)=>{
         e.preventDefault()
         // console.log("clicked!!!")
         const email= emailRef.current.value.trim()
+        setLoading(true)
         try{
             const res= await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${process.env.REACT_APP_FIREBASE_API_KEY}`,{
                 method:'POST',
@@ -53,10 +57,12 @@ const Auth=(props)=>{
             }
             setSuccessMessage("Email sent successfully!!!")
             setErrorMessage(null)
+            setLoading(false)
         }catch(error){  
             // show the error message
             setErrorMessage(error.message)
             setSuccessMessage(null)
+            setLoading(false)
             // console.log(error.message)
         }
 
@@ -97,6 +103,7 @@ const Auth=(props)=>{
             url=`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
         }
 
+        setLoading(true)
         try{
 
             // check if it is sign up then Hnadle exist
@@ -181,9 +188,11 @@ const Auth=(props)=>{
             localStorage.setItem('cb_user_localId',parsedRes.localId)
             localStorage.setItem('cb_user_handleIp',handleIp)
 
+            setLoading(false)
             authCntx.login(parsedRes.idToken,parsedRes.email,parsedRes.expiresIn,parsedRes.localId,handleIp)
             history.push("/profile")
         }catch(error){
+            setLoading(false)
             setSuccessMessage(null)
             setErrorMessage(error.message)
             console.log(error.message)
@@ -192,6 +201,8 @@ const Auth=(props)=>{
 
     return(
         <div className="log-sign-container">
+
+            {loading?<OpenSpinner />:null}
 
             <form onSubmit={ !forgotPwState? submitHandler : forgotPassword} className="log-sign-form">
 
