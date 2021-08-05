@@ -15,9 +15,9 @@ class CfRatingGraph extends Component{
         error:null
     }
 
-    async componentDidMount(){
-        if(this.state.dataPoints || this.state.error)
-            return;
+    async componentDidMount(){                           ////////////////************************************
+        if(this.state.dataPoints || this.state.error)    ///////////////// HAVE TO STORE HANDLE IN STATE ALLOW TO MOVE IF HANDLE PASSED TO HERE IS DIFFERENT FROM THE PREVIOUS 
+            return;                                      ////////////////************************************
         this.setState({
             loading:true
         })

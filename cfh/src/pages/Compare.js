@@ -64,7 +64,7 @@ const Compare=(props)=>{
 
             setLoading(false)
             setErrorFound(null)
-            setHandle1State(parsedRes.result[0]) ////////////////////
+            setHandle1State(parsedRes.result[0]) //////////////////// this is causing some problems
             setHandle2State(parsedRes.result[1])
 
         }catch(error){
