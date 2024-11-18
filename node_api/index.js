@@ -3,9 +3,9 @@ dotenv.config();
 require('./db/mongoose')
 
 // Below is for DB automatic updation
-require('./db/addProblemsToDB.js')
+// require('./db/addProblemsToDB.js')    /////////// ********************************* FIX IT LATER
 // the below is the scheduling part
-require('./utils/schedulingTasks')
+// require('./utils/schedulingTasks') /////////// ********************************* FIX IT LATER
 
 const express=require('express');
 
@@ -15,6 +15,8 @@ const cors = require('cors');
 var whitelist = ['https://code-buddy-cfh.netlify.app']
 var corsOptions = {
   origin: function (origin, callback) {
+    // callback(null, true) /////////// ********************************* FIX IT LATER
+    // return;
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
