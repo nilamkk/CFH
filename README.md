@@ -22,4 +22,26 @@ You can visit the site [here](https://code-buddy-cfh.netlify.app/). If you do no
 
 ## Screen shots
 
+![Login](/screen_shots/logIn.png)
 
+![Sign up](/screen_shots/signUp.png)
+
+![up_contests](/screen_shots/upcoming_contests.png)
+
+![add_prob_1](/screen_shots/add_new_problems.png)
+
+![add_prob_2](/screen_shots/add_new_problems_2.png)
+
+![problem_category](/screen_shots/problem_category.png)
+
+![Profile_2](/screen_shots/compare_2.png)
+
+![Compare_3](/screen_shots/compare_3.png)
+
+![Profile_1](/screen_shots/profile_1.png)
+
+![Profile_2](/screen_shots/profile_2.png)
+
+![Profile_3](/screen_shots/profile_3.png)
+
+![Profile_4](/screen_shots/profile_4.png)
