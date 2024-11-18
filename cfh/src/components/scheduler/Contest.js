@@ -37,7 +37,7 @@ const Contest=props=>{
         setLoading(true)
         console.log(contestInfo.url,"***********")
         try{
-            const res=await fetch('https://code-buddy-cfh.herokuapp.com/set-contest-reminder',{                 
+            const res=await fetch('https://code-buddy-2-0.onrender.com/set-contest-reminder',{                 
                 method:"POST", 
                 headers:{
                     'Content-Type':'application/json'
@@ -125,7 +125,7 @@ const Contest=props=>{
     const removeReminderFromDB=async()=>{
         try{
             setLoading(true)
-            let url=`https://code-buddy-cfh.herokuapp.com/remove-user-reminder-contest`
+            let url=`https://code-buddy-2-0.onrender.com/remove-user-reminder-contest`
             // req to remove reminder
             const result= await fetch(url,{             /////////////////////////////////////////////////
                 method:"POST", 

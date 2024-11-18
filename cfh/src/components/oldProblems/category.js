@@ -23,7 +23,7 @@ const Category=(props)=>{
         setShowModal(state=>false)
     }
     const clickDeleteHandler=async ()=>{
-        let url=`https://code-buddy-cfh.herokuapp.com/delete-category`
+        let url=`https://code-buddy-2-0.onrender.com/delete-category`
         removeModal()
         setLoading(true)
         try{
@@ -67,7 +67,7 @@ const Category=(props)=>{
             console.log("Different selected!!!")
         }
         setLoading(true)
-        let url=`https://code-buddy-cfh.herokuapp.com/get-problems-from-category?title=${props.category.title}&LocalId=${props.LocalId}&id=${props.category._id}`
+        let url=`https://code-buddy-2-0.onrender.com/get-problems-from-category?title=${props.category.title}&LocalId=${props.LocalId}&id=${props.category._id}`
         
         try{
             const result= await fetch(url)                  ////////////////////////////////

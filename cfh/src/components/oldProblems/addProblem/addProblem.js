@@ -48,7 +48,7 @@ const AddProblem=props=>{
                     iif( ()=>term.length>1 ,
                     merge(
                         of({loading:true,error:null,noResult:false}),
-                        fetch('https://code-buddy-cfh.herokuapp.com/get-problem-by-name?name='+term+'&LocalId='+props.LocalId)
+                        fetch('https://code-buddy-2-0.onrender.com/get-problem-by-name?name='+term+'&LocalId='+props.LocalId)
                         .then((res)=>{
                             console.log("the term is here: ",term)
                             if(res.ok){

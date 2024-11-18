@@ -33,7 +33,7 @@ const configurePushSub=async (LocalId)=>{
             userVisibleOnly:true,
             applicationServerKey:convertedPublicVapidKey   
         })
-        let url="https://code-buddy-cfh.herokuapp.com/update-user-subscription"          
+        let url="https://code-buddy-2-0.onrender.com/update-user-subscription"          
         let res= await fetch(url,{            
             method:"POST", 
             headers:{
