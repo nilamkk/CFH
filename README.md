@@ -28,4 +28,4 @@ You can visit the site [here](https://code-buddy-cfh.netlify.app/). If you do no
 
 ![DeleteProblem](/screen_shots/delete_problem.png)
 
-![Signup](/screen_shots/login.png)
+![Signup](/screen_shots/logIn.png)
