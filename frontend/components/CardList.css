@@ -1,0 +1,13 @@
+.vertical-card-list {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 16px; /* Space between cards */
+    padding: 16px; /* Optional padding for the list */
+  }
+  
+  .vertical-card-item {
+    width: 100%; /* Cards take full width */
+    max-width: 400px; /* Optional: limit the maximum width of the cards */
+    margin: 0 auto; /* Center cards if max-width is set */
+  }
+  

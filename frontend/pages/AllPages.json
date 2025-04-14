@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Home",
+        "path": "/"
+    },
+    {
+        "name": "Profile",
+        "path": "/profile"
+    },
+    {
+        "name": "Compare",
+        "path": "/compare"
+    },
+    {
+        "name": "Search Problem",
+        "path": "/search-problem"
+    },
+    {
+        "name": "Problem Lists",
+        "path": "/problem-lists"
+    }
+]
